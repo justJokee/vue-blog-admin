@@ -4,8 +4,12 @@ export interface meta {
   // 菜单名称
   name?: string
   // 图标
-  icon?: string
+  icon?: any
   beMenu?: boolean
 }
-
+declare global {
+  interface Window {
+    hljs: any
+  }
+}
 export type metaAlias = meta | undefined

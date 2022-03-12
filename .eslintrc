@@ -15,7 +15,8 @@
     "defineProps": "readonly",
     "defineEmits": "readonly",
     "defineExpose": "readonly",
-    "withDefaults": "readonly"
+    "withDefaults": "readonly",
+    "hljs": "readonly"
   },
   "extends": [
     "eslint:recommended",
@@ -31,6 +32,7 @@
     "no-unused-vars": 0,
     "@typescript-eslint/no-unused-vars": ["error"],
     // vue相关
-    "vue/singleline-html-element-content-newline": "off"
+    "vue/singleline-html-element-content-newline": "off",
+    "vue/max-attributes-per-line": "off"
   }
 }

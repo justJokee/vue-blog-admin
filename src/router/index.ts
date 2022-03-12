@@ -6,8 +6,12 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import MpLayout from '@/views/Layout/mp-layout.vue'
 import { meta } from '@/types/'
+import { ArticleOutlined, ChatBubbleOutlineTwotone, SnapchatRound, EditCalendarTwotone } from '@vicons/material'
 const login = () => import('@/views/Login/mp-login.vue')
 const articles = () => import('@/views/Articles/mp-articles.vue')
+const comments = () => import('@/views/Comments/mp-comments.vue')
+const messages = () => import('@/views/Messages/mp-messages.vue')
+const write = () => import('@/views/Write/mp-write.vue')
 interface metaType {
   meta?: meta
 }
@@ -30,7 +34,7 @@ const routes: Array<RouteRecordRawStrict> = [
     component: MpLayout,
     meta: {
       name: '文章管理',
-      icon: '',
+      icon: ArticleOutlined,
       asTopMenu: true
     },
     children: [
@@ -51,14 +55,17 @@ const routes: Array<RouteRecordRawStrict> = [
     component: MpLayout,
     meta: {
       name: '文章评论管理',
-      icon: '',
       asTopMenu: false
     },
     children: [
       {
         path: 'comments/:articleId?',
         name: 'comments',
-        component: {}
+        component: comments,
+        meta: {
+          name: '文章评论',
+          icon: ChatBubbleOutlineTwotone
+        }
       }
     ]
   },
@@ -69,15 +76,16 @@ const routes: Array<RouteRecordRawStrict> = [
     meta: {
       name: '留言管理',
       icon: '',
-      asTopMenu: true
+      asTopMenu: false
     },
     children: [
       {
         path: 'messages',
         name: 'messages',
-        component: {},
+        component: messages,
         meta: {
-          name: '留言列表'
+          name: '留言',
+          icon: SnapchatRound
         }
       }
     ]
@@ -95,7 +103,11 @@ const routes: Array<RouteRecordRawStrict> = [
       {
         path: 'write',
         name: 'write',
-        component: {}
+        component: write,
+        meta: {
+          name: '写作',
+          icon: EditCalendarTwotone
+        }
       }
     ]
   }
