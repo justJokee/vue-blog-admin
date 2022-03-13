@@ -5,63 +5,56 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref, watch } from 'vue'
+import Quill, { generateCreate } from '@/utils/quillHack'
 import 'quill/dist/quill.snow.css'
-import tippy from 'tippy.js'
-import 'tippy.js/dist/tippy.css' // o
-import 'tippy.js/themes/light.css'
+import handleSelectLanguage from '@/utils/tippy'
+import editorToolbarOptions from '@/utils/editorToolbarOptions'
+interface propsType {
+  modelValue: string
+  initValue?: string
+}
 
-import { nextTick } from 'vue'
-import Quill from 'quill'
-const toolbarOptions = [
-  ['bold', 'italic', 'underline', 'strike'], // 加粗 斜体 下划线 删除线
-  ['blockquote', 'code-block'], // 引用  代码块
-  [{ header: 1 }, { header: 2 }], // 1、2 级标题
-  [{ list: 'ordered' }, { list: 'bullet' }], // 有序、无序列表
-  [{ script: 'sub' }, { script: 'super' }], // 上标/下标
-  [{ indent: '-1' }, { indent: '+1' }], // 缩进
-  // [{'direction': 'rtl'}],                         // 文本方向
-  [{ size: ['small', false, 'large', 'huge'] }], // 字体大小
-  [{ header: [1, 2, 3, 4, 5, 6, false] }], // 标题
-  [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
-  [{ font: [] }], // 字体种类
-  [{ align: [] }], // 对齐方式
-  ['clean'], // 清除文本格式
-  ['link', 'image'] // 链接、图片
-]
+interface emitsType {
+  (e: 'update:modelValue', content: string): void
+}
 
+const props = defineProps<propsType>()
+const emit = defineEmits<emitsType>()
+console.log(props, emit)
+
+const toolbarOptions = editorToolbarOptions
+const initCodeBlockConfig: any = {}
+// 添加code-block
+const IS_CODING = ref(false)
+// quill实例
+let quill: Quill
+let content: string = ''
 window.hljs.configure({
   // optionally configure hljs
   languages: ['javascript', 'ruby', 'python', 'css']
 })
+// 魔改quill
+generateCreate(initCodeBlockConfig)
 
-var codeBlock = Quill.import('formats/code-block')
-codeBlock.create = function (value: string) {
-  let domNode = document.createElement('pre')
-
-  domNode.setAttribute('class', value + ' ql-syntax')
-  console.log('dom被创建了--->>>>', domNode, value)
-  return domNode
-}
-
-nextTick(() => {
-  const quill = new Quill('#editor', {
+onMounted(() => {
+  quill = new Quill('#editor', {
     modules: {
       syntax: true, // Include syntax module
 
       toolbar: {
         container: toolbarOptions,
         handlers: {
-          'code-block': function (value: boolean) {
-            console.log('打开或者关闭--->>>>', value)
+          'code-block': (value: boolean) => {
+            IS_CODING.value = value
+
             if (!value) {
               // 光标跳出代码块
               quill.insertText(quill.getLength() + 1, '\n', 'silent')
-              // 必须加下边这行赋值语句，否则代码块选中状态不会清空
-              quill.setContents(quill.getContents())
-              // 移动光标至最新位置
-              quill.setSelection(quill.getLength(), 0)
-
-              console.log('这是content--->>>>', quill.getContents())
+              // 必须在下一个宏任务中移动光标至最新位置，否则代码块选中状态不会清空
+              setTimeout(() => {
+                quill.setSelection(quill.getLength(), 0)
+              }, 0)
             }
             return false
           }
@@ -70,45 +63,58 @@ nextTick(() => {
     },
     theme: 'snow'
   })
-  function handleSelectLanguage(instance: any, event: MouseEvent) {
-    console.log('点击的事件--->>>', instance, (event.target as HTMLElement).dataset)
-    const dataset = (event.target as HTMLElement).dataset
-    const qq = document.querySelector('.xixi')
-    qq?.removeEventListener('click', binder, false)
-    quill.format('code-block', dataset.lang, 'silent')
-    instance.hide()
+  // 初始值
+  if (props.initValue) {
+    quill.clipboard.dangerouslyPasteHTML(props.initValue)
   }
-  let binder: any = null
-  // <li>css</li>
-  tippy('.ql-code-block', {
-    content: `<ul class = "xixi"><li data-lang='language-javascript'>javascript</li><li data-lang='language-css'>css</li></ul>`,
-    allowHTML: true,
-    trigger: 'click',
-    theme: 'light',
-    interactive: true,
-
-    onMount(instance) {
-      // ...
-      console.log('poper穿件成功--->>>', document.querySelector('.xixi'))
-      const qq = document.querySelector('.xixi')
-      binder = handleSelectLanguage.bind(null, instance)
-      qq?.addEventListener('click', binder, false)
-    },
-    onDestroy() {}
-  })
+  // tippy
+  handleSelectLanguage(quill, IS_CODING)
   const el = document.querySelector('#editor > .ql-editor')
   quill.on('text-change', function () {
-    console.log('获得取得时间：：：；', { str: el?.innerHTML })
-    console.log('监听content--->>>>', quill.getContents())
+    content = (el as Element).innerHTML
+    console.log('富文本html--->>>>', { str: el?.innerHTML })
+    content = compileCodeBlock(content, initCodeBlockConfig)
+    emit('update:modelValue', content)
   })
-  setTimeout(() => {
-    // 正则判断维护map映射
-    quill.clipboard.dangerouslyPasteHTML(
-      0,
-      '<pre class="language-js ql-syntax" data-lang="js"><!--language-->//zheshi<code><span class="hljs-string">const a = \'这是一个666测试\'</span>\n</code></pre><pre>.css{font-size:12px;}</pre>'
-    )
-  }, 5000)
+  // setTimeout(() => {
+  //   // 正则判断维护map映射
+  //   quill.clipboard.dangerouslyPasteHTML(
+  //     '<pre class="language-js ql-syntax" data-lang="js"><!--language-->//zheshi<code><span class="hljs-string">const a = \'这是一个666测试\'</span>\n</code></pre><pre>.css{font-size:12px;}</pre>'
+  //   )
+  // }, 10000)
 })
-</script>
 
+watch(
+  () => props.initValue,
+  (initValue: string | undefined) => {
+    if (initValue && quill) {
+      console.log('监听触发初始化--->>>>>')
+      quill.clipboard.dangerouslyPasteHTML(initValue)
+    }
+  }
+)
+function compileCodeBlock(content: string, initCodeBlockConfig?: any): string {
+  const codeBlockReg = /<pre\s+class\s*=\s*"(.*?)"(?:.|\s)*?<\/pre>/g
+  // 初始化赋值行为，解析存储代码块语言
+  if (initCodeBlockConfig) {
+    const blocks = content.match(codeBlockReg)
+    console.log('这是blocks--->>>>>', blocks)
+
+    if (blocks && blocks.length) {
+      blocks.forEach((pre, index) => {
+        codeBlockReg.lastIndex = 0
+        const execArr = codeBlockReg.exec(pre)
+
+        if (execArr && execArr.length) {
+          const classNames = execArr[1].match(/(language-\S+)/g)
+          const language = classNames && classNames.length ? classNames[0] : ''
+          initCodeBlockConfig[index] = language
+        }
+      })
+    }
+    console.log('codeBlocks=======>>>>>>', initCodeBlockConfig)
+  }
+  return content
+}
+</script>
 <style lang="scss"></style>
