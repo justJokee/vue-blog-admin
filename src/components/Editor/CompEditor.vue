@@ -6,10 +6,12 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
-import Quill, { generateCreate } from '@/utils/quillHack'
+import Quill, { generateCreate, reInitIndex } from '@/utils/quillHack'
 import 'quill/dist/quill.snow.css'
 import handleSelectLanguage from '@/utils/tippy'
 import editorToolbarOptions from '@/utils/editorToolbarOptions'
+import { imageHandler } from '@/utils/imageHandler'
+
 interface propsType {
   modelValue: string
   initValue?: string
@@ -21,7 +23,6 @@ interface emitsType {
 
 const props = defineProps<propsType>()
 const emit = defineEmits<emitsType>()
-console.log(props, emit)
 
 const toolbarOptions = editorToolbarOptions
 const initCodeBlockConfig: any = {}
@@ -41,13 +42,15 @@ onMounted(() => {
   quill = new Quill('#editor', {
     modules: {
       syntax: true, // Include syntax module
-
+      clipboard: {
+        // 解决html回显莫名其妙出现的</br>,原因不明，未深究
+        matchVisual: false
+      },
       toolbar: {
         container: toolbarOptions,
         handlers: {
           'code-block': (value: boolean) => {
             IS_CODING.value = value
-
             if (!value) {
               // 光标跳出代码块
               quill.insertText(quill.getLength() + 1, '\n', 'silent')
@@ -63,9 +66,11 @@ onMounted(() => {
     },
     theme: 'snow'
   })
+  const toolbar = quill.getModule('toolbar')
+  toolbar.addHandler('image', imageHandler.bind(null, true, quill))
   // 初始值
   if (props.initValue) {
-    quill.clipboard.dangerouslyPasteHTML(props.initValue)
+    initEditorValue(props.initValue)
   }
   // tippy
   handleSelectLanguage(quill, IS_CODING)
@@ -73,26 +78,26 @@ onMounted(() => {
   quill.on('text-change', function () {
     content = (el as Element).innerHTML
     console.log('富文本html--->>>>', { str: el?.innerHTML })
-    content = compileCodeBlock(content, initCodeBlockConfig)
+    content = compileCodeBlock(content)
     emit('update:modelValue', content)
   })
-  // setTimeout(() => {
-  //   // 正则判断维护map映射
-  //   quill.clipboard.dangerouslyPasteHTML(
-  //     '<pre class="language-js ql-syntax" data-lang="js"><!--language-->//zheshi<code><span class="hljs-string">const a = \'这是一个666测试\'</span>\n</code></pre><pre>.css{font-size:12px;}</pre>'
-  //   )
-  // }, 10000)
 })
 
 watch(
   () => props.initValue,
   (initValue: string | undefined) => {
     if (initValue && quill) {
-      console.log('监听触发初始化--->>>>>')
-      quill.clipboard.dangerouslyPasteHTML(initValue)
+      initEditorValue(initValue)
     }
   }
 )
+// 初始化编辑器数据（回显）
+function initEditorValue(initValue: string) {
+  // 生成language映射
+  compileCodeBlock(initValue, initCodeBlockConfig)
+  quill.clipboard.dangerouslyPasteHTML(initValue)
+  reInitIndex()
+}
 function compileCodeBlock(content: string, initCodeBlockConfig?: any): string {
   const codeBlockReg = /<pre\s+class\s*=\s*"(.*?)"(?:.|\s)*?<\/pre>/g
   // 初始化赋值行为，解析存储代码块语言
@@ -112,9 +117,15 @@ function compileCodeBlock(content: string, initCodeBlockConfig?: any): string {
         }
       })
     }
-    console.log('codeBlocks=======>>>>>>', initCodeBlockConfig)
+  }
+  // 由编辑器产出的html字符串
+  else {
+    content = content.replace(/<pre\s+(.|\s)*?>/g, '$&<code>').replace(/<\/pre/g, '</code>$&')
   }
   return content
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.comp-editor {
+}
+</style>

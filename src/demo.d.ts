@@ -1,3 +1,0 @@
-interface demo {
-  a: string
-}

@@ -1,7 +1,7 @@
 <template>
   <n-layout class="mp-layout">
     <n-config-provider :theme="darkTheme" class="mp-layout__header">
-      <n-layout-header bordered style="--n-border-color: rgba(255, 255, 255, 0.29)">navbar</n-layout-header>
+      <n-layout-header bordered>navbar</n-layout-header>
     </n-config-provider>
     <n-layout class="mp-layout__content" has-sider>
       <n-config-provider :theme="darkTheme" class="mp-layout__sider">

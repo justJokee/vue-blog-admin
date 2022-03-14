@@ -16,7 +16,8 @@
     "defineEmits": "readonly",
     "defineExpose": "readonly",
     "withDefaults": "readonly",
-    "hljs": "readonly"
+    "hljs": "readonly",
+    "qiniu": "readonly"
   },
   "extends": [
     "eslint:recommended",
