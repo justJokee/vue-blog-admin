@@ -19,6 +19,7 @@ interface propsType {
 
 interface emitsType {
   (e: 'update:modelValue', content: string): void
+  (e: 'change', content: string): void
 }
 
 const props = defineProps<propsType>()
@@ -80,6 +81,7 @@ onMounted(() => {
     console.log('富文本html--->>>>', { str: el?.innerHTML })
     content = compileCodeBlock(content)
     emit('update:modelValue', content)
+    emit('change', content)
   })
 })
 
@@ -127,5 +129,8 @@ function compileCodeBlock(content: string, initCodeBlockConfig?: any): string {
 </script>
 <style lang="scss">
 .comp-editor {
+  #editor {
+    min-height: 400px;
+  }
 }
 </style>

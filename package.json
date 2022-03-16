@@ -28,8 +28,6 @@
     "@types/quill": "^2.0.9",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
-    "@vicons/fluent": "^0.12.0",
-    "@vicons/material": "^0.12.0",
     "@vitejs/plugin-vue": "^2.2.0",
     "eslint": "^8.10.0",
     "eslint-plugin-vue": "^8.5.0",

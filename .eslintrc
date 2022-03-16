@@ -34,6 +34,7 @@
     "@typescript-eslint/no-unused-vars": ["error"],
     // vue相关
     "vue/singleline-html-element-content-newline": "off",
-    "vue/max-attributes-per-line": "off"
+    "vue/max-attributes-per-line": "off",
+    "vue/attributes-order": "off"
   }
 }

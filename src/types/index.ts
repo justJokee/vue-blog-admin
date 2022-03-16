@@ -21,6 +21,28 @@ export interface qiniuUploadParams {
   key: string
   token: string
 }
+
+export interface articleType {
+  original: number
+  title: string
+  abstract: string
+  publish: number
+  tags: string[]
+}
+// 文章目录
+export interface catalogField {
+  level: number
+  level_tree: number
+  name: string
+  order: number | string
+  tempId: string
+  children: Array<catalogField>
+}
+// dom/html-string 中解析出的目录一维tree
+export interface flatTree {
+  name: string
+  level: number
+}
 declare global {
   interface Window {
     hljs: any

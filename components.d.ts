@@ -5,17 +5,24 @@
 declare module 'vue' {
   export interface GlobalComponents {
     CompEditor: typeof import('./src/components/Editor/CompEditor.vue')['default']
-    Editor: typeof import('./src/components/Editor/Editor.vue')['default']
+    CompTest: typeof import('./src/components/Test/CompTest.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
+    NCascader: typeof import('naive-ui')['NCascader']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
-    NEl: typeof import('naive-ui')['NEl']
+    NDynamicTags: typeof import('naive-ui')['NDynamicTags']
+    NForm: typeof import('naive-ui')['NForm']
+    NFormItem: typeof import('naive-ui')['NFormItem']
+    NIcon: typeof import('naive-ui')['NIcon']
+    NInput: typeof import('naive-ui')['NInput']
     NLayout: typeof import('naive-ui')['NLayout']
     NLayoutHeader: typeof import('naive-ui')['NLayoutHeader']
     NLayoutSider: typeof import('naive-ui')['NLayoutSider']
     NMenu: typeof import('naive-ui')['NMenu']
+    NRadio: typeof import('naive-ui')['NRadio']
+    NRadioGroup: typeof import('naive-ui')['NRadioGroup']
+    NSelect: typeof import('naive-ui')['NSelect']
     NSpace: typeof import('naive-ui')['NSpace']
-    NSwitch: typeof import('naive-ui')['NSwitch']
   }
 }
 

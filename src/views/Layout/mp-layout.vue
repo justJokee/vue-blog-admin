@@ -1,7 +1,10 @@
 <template>
   <n-layout class="mp-layout">
     <n-config-provider :theme="darkTheme" class="mp-layout__header">
-      <n-layout-header bordered>navbar</n-layout-header>
+      <n-layout-header bordered>
+        navbar
+        <button @click="update">点击</button>
+      </n-layout-header>
     </n-config-provider>
     <n-layout class="mp-layout__content" has-sider>
       <n-config-provider :theme="darkTheme" class="mp-layout__sider">
@@ -16,20 +19,30 @@
         </n-layout-sider>
       </n-config-provider>
       <n-layout class="mp-layout__body">
-        <router-view />
+        <n-card title="写作">
+          <router-view v-slot="{ Component }">
+            <transition name="component-fade" mode="out-in">
+              <component :is="Component" />
+            </transition>
+          </router-view>
+        </n-card>
       </n-layout>
     </n-layout>
   </n-layout>
 </template>
 
 <script setup lang="ts">
-import { h, ref, watch, Component } from 'vue'
-import { MenuOption, darkTheme, NIcon } from 'naive-ui'
-// import {  } from 'naive-ui'
+import { demo } from '@/compositions/test'
+
+import { h, ref, watch } from 'vue'
+import { MenuOption, darkTheme } from 'naive-ui'
 import router from '@/router/'
 import { RouteRecordRaw, RouterLink } from 'vue-router'
 import { metaAlias } from '@/types/'
 import { getRandomCharacter } from '@/utils/getRandomCharacter'
+function update() {
+  demo.value = '666'
+}
 const { options } = router
 const layoutRoutes: RouteRecordRaw[] = []
 options.routes.forEach((route) => {
@@ -61,7 +74,7 @@ layoutRoutes.map((route: RouteRecordRaw) => {
             }
           ),
         key: route.path + '/' + subRoutePath,
-        icon: subRoute.meta?.icon ? renderIcon(subRoute.meta?.icon as Component) : undefined
+        icon: subRoute.meta?.icon ? renderIcon(subRoute.meta?.icon as string) : undefined
       }
       children.push(menu)
     })
@@ -71,7 +84,7 @@ layoutRoutes.map((route: RouteRecordRaw) => {
     menuOptions.push({
       label: route.meta.name,
       key: getRandomCharacter(),
-      icon: route.meta.icon ? renderIcon(route.meta.icon as Component) : undefined,
+      icon: route.meta.icon ? renderIcon(route.meta.icon as string) : undefined,
       children
     })
   } else {
@@ -107,8 +120,8 @@ watch(
   }
 )
 
-function renderIcon(icon: Component) {
-  return () => h(NIcon, null, { default: () => h(icon) })
+function renderIcon(icon: string) {
+  return () => h('i', { class: icon })
 }
 </script>
 
@@ -135,5 +148,17 @@ function renderIcon(icon: Component) {
       height: 100%;
     }
   }
+  &__body {
+    padding: 12px;
+  }
+}
+.component-fade-enter-active,
+.component-fade-leave-active {
+  transition: opacity 0.18s ease-in;
+}
+
+.component-fade-enter-from,
+.component-fade-leave-to {
+  opacity: 0;
 }
 </style>

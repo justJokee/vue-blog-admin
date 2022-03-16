@@ -6,7 +6,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import MpLayout from '@/views/Layout/mp-layout.vue'
 import { meta } from '@/types/'
-import { ArticleOutlined, ChatBubbleOutlineTwotone, SnapchatRound, EditCalendarTwotone } from '@vicons/material'
 const login = () => import('@/views/Login/mp-login.vue')
 const articles = () => import('@/views/Articles/mp-articles.vue')
 const comments = () => import('@/views/Comments/mp-comments.vue')
@@ -34,7 +33,7 @@ const routes: Array<RouteRecordRawStrict> = [
     component: MpLayout,
     meta: {
       name: '文章管理',
-      icon: ArticleOutlined,
+      icon: 'el-icon-document',
       asTopMenu: true
     },
     children: [
@@ -64,7 +63,7 @@ const routes: Array<RouteRecordRawStrict> = [
         component: comments,
         meta: {
           name: '文章评论',
-          icon: ChatBubbleOutlineTwotone
+          icon: 'el-icon-chat-dot-square'
         }
       }
     ]
@@ -85,7 +84,7 @@ const routes: Array<RouteRecordRawStrict> = [
         component: messages,
         meta: {
           name: '留言',
-          icon: SnapchatRound
+          icon: 'el-icon-chat-line-round'
         }
       }
     ]
@@ -106,7 +105,7 @@ const routes: Array<RouteRecordRawStrict> = [
         component: write,
         meta: {
           name: '写作',
-          icon: EditCalendarTwotone
+          icon: 'el-icon-edit'
         }
       }
     ]
