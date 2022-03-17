@@ -10,7 +10,7 @@ const login = () => import('@/views/Login/mp-login.vue')
 const articles = () => import('@/views/Articles/mp-articles.vue')
 const comments = () => import('@/views/Comments/mp-comments.vue')
 const messages = () => import('@/views/Messages/mp-messages.vue')
-const write = () => import('@/views/Write/mp-write.vue')
+const doc = () => import('@/views/Write/mp-doc.vue')
 interface metaType {
   meta?: meta
 }
@@ -100,9 +100,9 @@ const routes: Array<RouteRecordRawStrict> = [
     },
     children: [
       {
-        path: 'write',
-        name: 'write',
-        component: write,
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
         meta: {
           name: '写作',
           icon: 'el-icon-edit'

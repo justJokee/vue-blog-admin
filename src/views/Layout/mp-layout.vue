@@ -1,10 +1,7 @@
 <template>
   <n-layout class="mp-layout">
     <n-config-provider :theme="darkTheme" class="mp-layout__header">
-      <n-layout-header bordered>
-        navbar
-        <button @click="update">点击</button>
-      </n-layout-header>
+      <n-layout-header bordered>navbar</n-layout-header>
     </n-config-provider>
     <n-layout class="mp-layout__content" has-sider>
       <n-config-provider :theme="darkTheme" class="mp-layout__sider">
@@ -32,17 +29,13 @@
 </template>
 
 <script setup lang="ts">
-import { demo } from '@/compositions/test'
-
 import { h, ref, watch } from 'vue'
 import { MenuOption, darkTheme } from 'naive-ui'
 import router from '@/router/'
 import { RouteRecordRaw, RouterLink } from 'vue-router'
 import { metaAlias } from '@/types/'
 import { getRandomCharacter } from '@/utils/getRandomCharacter'
-function update() {
-  demo.value = '666'
-}
+
 const { options } = router
 const layoutRoutes: RouteRecordRaw[] = []
 options.routes.forEach((route) => {

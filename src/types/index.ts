@@ -12,9 +12,7 @@ export interface httpRes {
   data: any
   info: string
 }
-export interface articleSaveParams {
-  publish: 0 | 1
-}
+
 export interface qiniuUploadParams {
   file: File
   // 文件名
@@ -26,18 +24,19 @@ export interface articleType {
   original: number
   title: string
   abstract: string
+  headerPic: string
   publish: number
-  tags: string[]
+  tag: string[]
+  content: string
 }
-// 文章目录
-export interface catalogField {
-  level: number
+// generateTree 生成的树结构（一般结合flatTree字段返回最终业务数据结构）
+export interface generateTreeType {
   level_tree: number
-  name: string
   order: number | string
-  tempId: string
   children: Array<catalogField>
 }
+// 文章目录
+export type catalogField = generateTreeType & flatTree
 // dom/html-string 中解析出的目录一维tree
 export interface flatTree {
   name: string

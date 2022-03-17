@@ -7,14 +7,14 @@
  * @author justJokee
  */
 
-import { flatTree, catalogField } from '@/types/'
-
+import { flatTree, generateTreeType } from '@/types/'
+type completeTreeType = flatTree & generateTreeType
 type flatTreeAfter = flatTree & { children?: Array<flatTreeAfter> }
 interface optionsType {
   level: keyof flatTree
 }
 
-export function generateTree(flatList: Array<flatTreeAfter>, options: optionsType = { level: 'level' }) {
+export function generateTree(flatList: Array<flatTree>, options: optionsType = { level: 'level' }) {
   const result: Array<flatTreeAfter> = []
   let stack: Array<flatTreeAfter> = []
   flatList.forEach((item: flatTreeAfter) => {
@@ -46,11 +46,11 @@ export function generateTree(flatList: Array<flatTreeAfter>, options: optionsTyp
       }
     }
   })
-  const lResult: Array<catalogField> = addTreeLevel(result)
-  return lResult
+  const TResult: Array<completeTreeType> = addTreeLevel(result)
+  return TResult
 }
 // 增加树层级
-function addTreeLevel(tree: Array<flatTreeAfter>, level?: number, order?: number | string): any {
+function addTreeLevel(tree: Array<flatTreeAfter>, level?: number, order?: number | string) {
   tree.forEach((catalog: any, index) => {
     if (!level) level = 0
     catalog.level_tree = level
@@ -61,5 +61,5 @@ function addTreeLevel(tree: Array<flatTreeAfter>, level?: number, order?: number
       addTreeLevel(catalog.children, level + 1, catalog.order)
     }
   })
-  return tree
+  return tree as Array<completeTreeType>
 }

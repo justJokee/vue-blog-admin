@@ -20,7 +20,6 @@ interface catalogField {
   level_tree: number
   name: string
   order: number | string
-  tempId: string
   children: Array<catalogField>
 }
 interface propsType {

@@ -27,7 +27,7 @@ async function handleUpload(quill: Quill) {
         })
         const index = (quill.getSelection() as RangeStatic).index
         quill.insertEmbed(index, 'image', import.meta.env.VITE_BASE_URL_QINIU + uploadRes.data.key)
-        quill.setSelection(index + 1)
+        quill.setSelection(index + 1, 0)
 
         console.log('这是七牛res--->>>>', uploadRes)
       }
