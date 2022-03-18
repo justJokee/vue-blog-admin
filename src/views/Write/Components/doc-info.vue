@@ -16,20 +16,22 @@
         <n-input v-model:value="article.abstract" placeholder="概要" />
       </n-form-item>
       <n-form-item label="标签" path="tag">
-        <n-cascader
-          class="workspace__info-tags"
-          v-model:value="article.tag"
-          check-strategy="child"
-          expand-trigger="click"
-          multiple
-          :show-path="false"
-          :options="recommandTags"
-        />
-        <n-input v-model:value="customTag" placeholder="自定义标签" class="workspace__info-customtag">
-          <template #suffix>
-            <i class="el-icon-plus" @click="addCustomTag" />
-          </template>
-        </n-input>
+        <div class="doc-info__tag">
+          <n-cascader
+            class="workspace__info-tags"
+            v-model:value="article.tag"
+            check-strategy="child"
+            expand-trigger="click"
+            multiple
+            :show-path="false"
+            :options="recommandTags"
+          />
+          <n-input v-model:value="customTag" placeholder="自定义标签" class="doc-info__ctag">
+            <template #suffix>
+              <i class="el-icon-plus" @click="addCustomTag" />
+            </template>
+          </n-input>
+        </div>
       </n-form-item>
       <n-form-item label="封面图">
         <n-upload
@@ -56,7 +58,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import type { UploadCustomRequestOptions, UploadFileInfo, FormRules } from 'naive-ui'
-import { articleType } from '@/types/'
+import { articleSchema } from '@/types/'
 import { recommandTags } from '@/utils/recommandTags'
 import api from '@/api/'
 interface propsType {
@@ -64,13 +66,15 @@ interface propsType {
   articleId?: number
   publish?: number
 }
+// type articleType = res<Partial<articleSchema['res']>>
 const props = withDefaults(defineProps<propsType>(), {
   edit: 1,
   publish: 1
 })
+// type oo =
 defineExpose({ submit })
 const customTag = ref('')
-const article = ref<articleType>({
+const article = ref<Partial<articleSchema['res']>>({
   original: 1,
   title: '',
   abstract: '',
@@ -79,6 +83,7 @@ const article = ref<articleType>({
   tag: [],
   content: ''
 })
+// article.value
 const rules: FormRules = {
   title: {
     required: true,
@@ -99,8 +104,9 @@ onMounted(async () => {
     const { data, status } = await api.getArticle({
       publish: props.publish,
       articleId: 1,
-      excludeContent: 1
+      excloudContent: 0
     })
+
     if (status === 200) {
       article.value = data
       fileList.value = [
@@ -129,7 +135,7 @@ async function submit() {
   }
 }
 function addCustomTag() {
-  article.value.tag.push(customTag.value)
+  article.value.tag?.push(customTag.value)
   customTag.value = ''
 }
 async function customRequest({ file, onFinish, onError }: UploadCustomRequestOptions) {
@@ -164,4 +170,17 @@ async function customRequest({ file, onFinish, onError }: UploadCustomRequestOpt
   }
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.doc-info {
+  &__tag {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+  }
+  &__ctag {
+    flex: 0 0 auto;
+    margin-left: 20px;
+    width: 140px !important;
+  }
+}
+</style>

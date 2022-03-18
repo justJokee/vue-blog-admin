@@ -4,18 +4,19 @@
  */
 
 import http from '@/http/'
-import { articleType, httpRes } from '@/types/'
+import { articleSchema, httpRes } from '@/types/'
+type REQ = articleSchema['req']
 export default {
   // 获取文章列表
-  getArticles(payload: any): Promise<httpRes> {
-    return http.get('/api/front/article/gets', payload)
+  getArticles<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES[]>> {
+    return http('get', '/api/front/article/gets', payload)
   },
   // 获取文章详情
-  getArticle(payload: any): Promise<httpRes> {
-    return http.get('/api/front/article/detail', payload)
+  getArticle<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES>> {
+    return http('get', '/api/front/article/detail', payload)
   },
   // 存储文章
-  saveArticle(payload: articleType): Promise<httpRes> {
-    return http.get('/api/front/article/save', payload)
+  saveArticle<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES>> {
+    return http('post', '/api/front/article/save', payload)
   }
 }

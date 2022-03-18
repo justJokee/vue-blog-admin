@@ -1,6 +1,6 @@
 import axios, { Method } from 'axios'
 import qs from 'qs'
-import { httpRes } from '@/types/'
+import { httpMethods } from '@/types/'
 // import { errorCode } from '@/utils/errorCode'
 // import { Message } from 'element-ui'
 
@@ -18,7 +18,7 @@ axios.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-function ajax(type: Method, url: string, options: any): Promise<httpRes> {
+function ajax<REQ, RES>(type: Method, url: string, options: REQ): Promise<RES> {
   return new Promise((resolve, reject) => {
     axios({
       method: type,
@@ -41,62 +41,9 @@ function ajax(type: Method, url: string, options: any): Promise<httpRes> {
       })
   })
 }
-const config = {
-  get(url: string, options: any): Promise<httpRes> {
-    return new Promise((resolve, reject) => {
-      ajax('get', url, options)
-        .then((data) => {
-          resolve(data)
-        })
-        .catch((e) => {
-          reject(e)
-        })
-    })
-  },
-  post(url: string, options: any) {
-    return new Promise((resolve, reject) => {
-      ajax('post', url, options)
-        .then((data) => {
-          resolve(data)
-        })
-        .catch((e) => {
-          reject(e)
-        })
-    })
-  },
-  patch(url: string, options: any) {
-    return new Promise((resolve, reject) => {
-      ajax('patch', url, options)
-        .then((data) => {
-          resolve(data)
-        })
-        .catch((e) => {
-          reject(e)
-        })
-    })
-  },
-  put(url: string, options: any) {
-    return new Promise((resolve, reject) => {
-      ajax('put', url, options)
-        .then((data) => {
-          resolve(data)
-        })
-        .catch((e) => {
-          reject(e)
-        })
-    })
-  },
-  delete(url: string, options: any) {
-    return new Promise((resolve, reject) => {
-      ajax('delete', url, options)
-        .then((data) => {
-          resolve(data)
-        })
-        .catch((e) => {
-          reject(e)
-        })
-    })
-  }
+
+export default function <REQ, RES>(method: httpMethods, url: string, options: REQ) {
+  return ajax<REQ, RES>(method, url, options)
 }
 
 // function _message(t, m) {
@@ -106,5 +53,3 @@ const config = {
 //     center: true
 //   })
 // }
-
-export default config

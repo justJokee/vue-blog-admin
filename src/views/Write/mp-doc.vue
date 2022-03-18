@@ -1,10 +1,13 @@
 <template>
   <div class="mp-doc">
     <transition mode="out-in">
-      <div class="mp-ddoc__info" v-if="!$route.params.articleId">
+      <div class="mp-doc__info" v-if="!$route.params.articleId">
         <doc-info :edit="edit" ref="docInfoRef" />
+        <div class="info__submit">
+          <n-button>创建文档</n-button>
+        </div>
       </div>
-      <div class="mp-ddoc__editor" v-else>
+      <div class="mp-doc__editor" v-else>
         <doc-editor />
       </div>
     </transition>
@@ -28,6 +31,8 @@ watch($route, (to, from) => {
 <style lang="scss">
 .mp-doc {
   &__info {
+    width: 50%;
+    margin: 0 auto;
   }
   &__editor {
   }

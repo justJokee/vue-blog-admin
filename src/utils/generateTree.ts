@@ -7,17 +7,21 @@
  * @author justJokee
  */
 
-import { flatTree, generateTreeType } from '@/types/'
-type completeTreeType = flatTree & generateTreeType
-type flatTreeAfter = flatTree & { children?: Array<flatTreeAfter> }
-interface optionsType {
-  level: keyof flatTree
+// import { flatTree, generateTreeType } from '@/types/'
+// type completeTreeType = flatTree & generateTreeType
+// type flatTreeAfter = flatTree & { children?: Array<flatTreeAfter> }
+
+interface optionsType<T> {
+  prop: keyof T
 }
 
-export function generateTree(flatList: Array<flatTree>, options: optionsType = { level: 'level' }) {
-  const result: Array<flatTreeAfter> = []
-  let stack: Array<flatTreeAfter> = []
-  flatList.forEach((item: flatTreeAfter) => {
+interface flatTreeAfter<T> {
+  children?: Array<T>
+}
+export function generateTree<T extends flatTreeAfter<T>>(flatList: Array<T>, options: optionsType<T>) {
+  const result: Array<T> = []
+  let stack: Array<T> = []
+  flatList.forEach((item: T) => {
     // 栈为空，则直接入栈
     if (!stack.length) {
       item.children = []
@@ -25,9 +29,9 @@ export function generateTree(flatList: Array<flatTree>, options: optionsType = {
       result.push(item)
     } else {
       // 当前元素级别大于栈底元素，则倒序遍历栈，找到其父级并挂载
-      if (item[options.level] > stack[0][options.level]) {
+      if (item[options.prop] > stack[0][options.prop]) {
         stack.reverse().some((el) => {
-          if (el[options.level] < item[options.level]) {
+          if (el[options.prop] < item[options.prop]) {
             if (!el.children) el.children = []
             el.children.push(item)
             return true
@@ -46,11 +50,11 @@ export function generateTree(flatList: Array<flatTree>, options: optionsType = {
       }
     }
   })
-  const TResult: Array<completeTreeType> = addTreeLevel(result)
+  const TResult = addTreeLevel<T>(result)
   return TResult
 }
 // 增加树层级
-function addTreeLevel(tree: Array<flatTreeAfter>, level?: number, order?: number | string) {
+function addTreeLevel<T>(tree: Array<T>, level?: number, order?: number | string) {
   tree.forEach((catalog: any, index) => {
     if (!level) level = 0
     catalog.level_tree = level
@@ -61,5 +65,5 @@ function addTreeLevel(tree: Array<flatTreeAfter>, level?: number, order?: number
       addTreeLevel(catalog.children, level + 1, catalog.order)
     }
   })
-  return tree as Array<completeTreeType>
+  return tree
 }
