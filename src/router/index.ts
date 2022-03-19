@@ -33,7 +33,6 @@ const routes: Array<RouteRecordRawStrict> = [
     component: MpLayout,
     meta: {
       name: '文章管理',
-      icon: 'el-icon-document',
       asTopMenu: true
     },
     children: [
@@ -43,6 +42,7 @@ const routes: Array<RouteRecordRawStrict> = [
         name: 'articles',
         component: articles,
         meta: {
+          icon: 'el-icon-document',
           name: '文章列表'
         }
       }
@@ -63,7 +63,8 @@ const routes: Array<RouteRecordRawStrict> = [
         component: comments,
         meta: {
           name: '文章评论',
-          icon: 'el-icon-chat-dot-square'
+          icon: 'el-icon-chat-dot-square',
+          customLayout: 1
         }
       }
     ]
@@ -105,6 +106,517 @@ const routes: Array<RouteRecordRawStrict> = [
         component: doc,
         meta: {
           name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  //
+  //
+
+  //
+
+  //  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
+  },
+  // // 写作管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '写作777',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'doc/:articleId?',
+        name: 'doc',
+        component: doc,
+        meta: {
+          name: '写作666',
           icon: 'el-icon-edit'
         }
       }

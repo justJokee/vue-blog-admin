@@ -1,5 +1,5 @@
 <template>
-  <div class="mp-comments">111</div>
+  <div class="mp-comments">666</div>
 </template>
 
 <script setup lang="ts"></script>

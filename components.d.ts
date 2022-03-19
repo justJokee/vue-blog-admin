@@ -5,7 +5,9 @@
 declare module 'vue' {
   export interface GlobalComponents {
     CompEditor: typeof import('./src/components/Editor/CompEditor.vue')['default']
+    CompLayout: typeof import('./src/components/Layout/CompLayout.vue')['default']
     CompTest: typeof import('./src/components/Test/CompTest.vue')['default']
+    NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
     NCascader: typeof import('naive-ui')['NCascader']
