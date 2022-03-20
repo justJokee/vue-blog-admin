@@ -247,7 +247,7 @@ function renderIcon(icon: string) {
     }
     .navbar-user {
       height: 100%;
-      padding: 0 28px;
+      padding-right: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;

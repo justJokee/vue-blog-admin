@@ -1,4 +1,13 @@
 export * from './schema'
+import echarts from 'echarts'
+import { PieSeriesOption, LineSeriesOption } from 'echarts/charts'
+import {
+  TitleComponentOption,
+  TooltipComponentOption,
+  GridComponentOption,
+  // 数据集组件
+  DatasetComponentOption
+} from 'echarts/components'
 export interface meta {
   // 是否顶级菜单
   asTopMenu?: boolean
@@ -29,6 +38,15 @@ export interface flatTree {
   order?: number | string
   children?: flatTree[]
 }
+// 通过 ComposeOption 来组合出一个只有必须组件和图表的 Option 类型
+export type ECOption = echarts.ComposeOption<
+  | PieSeriesOption
+  | LineSeriesOption
+  | TitleComponentOption
+  | TooltipComponentOption
+  | GridComponentOption
+  | DatasetComponentOption
+>
 declare global {
   interface Window {
     hljs: any

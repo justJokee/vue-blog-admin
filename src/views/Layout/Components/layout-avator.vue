@@ -1,6 +1,9 @@
 <template>
   <div class="layout-user">
-    <n-avatar round size="large" :src="userInfo.avator" />
+    <div class="layout-user__content">
+      <n-avatar round size="large" :src="userInfo.avator" />
+      <span class="content-cheer">下午好，Marco !</span>
+    </div>
   </div>
 </template>
 
@@ -10,4 +13,14 @@ const $store = useStore()
 const userInfo = $store.state.userInfo
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.layout-user {
+  &__content {
+    display: flex;
+    align-items: center;
+    .content-cheer {
+      margin-left: 12px;
+    }
+  }
+}
+</style>

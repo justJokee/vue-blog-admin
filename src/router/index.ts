@@ -7,6 +7,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import MpLayout from '@/views/Layout/mp-layout.vue'
 import { meta } from '@/types/'
 const login = () => import('@/views/Login/mp-login.vue')
+const home = () => import('@/views/Home/mp-home.vue')
 const articles = () => import('@/views/Articles/mp-articles.vue')
 const comments = () => import('@/views/Comments/mp-comments.vue')
 const messages = () => import('@/views/Messages/mp-messages.vue')
@@ -26,10 +27,30 @@ const routes: Array<RouteRecordRawStrict> = [
     name: 'login',
     component: login
   },
+  // 首页
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '文章管理',
+      asTopMenu: false
+    },
+    children: [
+      // 文章管理
+      {
+        path: 'home',
+        name: 'home',
+        component: home,
+        meta: {
+          icon: 'el-icon-document',
+          name: '首页'
+        }
+      }
+    ]
+  },
   // 文章管理
   {
     path: '/view',
-    name: 'layout',
     component: MpLayout,
     meta: {
       name: '文章管理',
