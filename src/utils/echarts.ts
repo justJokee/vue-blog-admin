@@ -7,7 +7,8 @@ import {
   // 数据集组件
   DatasetComponent,
   // 内置数据转换器组件 (filter, sort)
-  TransformComponent
+  TransformComponent,
+  DataZoomComponent
 } from 'echarts/components'
 import { LabelLayout, UniversalTransition } from 'echarts/features'
 import { CanvasRenderer } from 'echarts/renderers'
@@ -23,7 +24,8 @@ echartsBase.use([
   TransformComponent,
   LabelLayout,
   UniversalTransition,
-  CanvasRenderer
+  CanvasRenderer,
+  DataZoomComponent
 ])
 
 export default echartsBase

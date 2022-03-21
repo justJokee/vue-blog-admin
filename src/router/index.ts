@@ -43,7 +43,9 @@ const routes: Array<RouteRecordRawStrict> = [
         component: home,
         meta: {
           icon: 'el-icon-document',
-          name: '首页'
+          name: '首页',
+          customLayout: 1,
+          pinLayout: 1
         }
       }
     ]
@@ -84,8 +86,7 @@ const routes: Array<RouteRecordRawStrict> = [
         component: comments,
         meta: {
           name: '文章评论',
-          icon: 'el-icon-chat-dot-square',
-          customLayout: 1
+          icon: 'el-icon-chat-dot-square'
         }
       }
     ]

@@ -1,5 +1,5 @@
 <template>
-  <div class="mp-messages">111</div>
+  <div class="mp-messages" />
 </template>
 
 <script setup lang="ts"></script>

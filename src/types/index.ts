@@ -6,7 +6,8 @@ import {
   TooltipComponentOption,
   GridComponentOption,
   // 数据集组件
-  DatasetComponentOption
+  DatasetComponentOption,
+  DataZoomComponentOption
 } from 'echarts/components'
 export interface meta {
   // 是否顶级菜单
@@ -46,6 +47,7 @@ export type ECOption = echarts.ComposeOption<
   | TooltipComponentOption
   | GridComponentOption
   | DatasetComponentOption
+  | DataZoomComponentOption
 >
 declare global {
   interface Window {

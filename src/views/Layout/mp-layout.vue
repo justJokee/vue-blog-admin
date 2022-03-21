@@ -39,11 +39,17 @@
               </template>
             </comp-layout>
           </div>
-          <div class="mp-layout__body">
+          <div class="mp-layout__body" :class="{ 'mp-layout__body--pin': pin }">
             <router-view v-slot="{ Component }">
               <transition name="component-fade" mode="out-in">
                 <component :is="Component" v-if="$route.meta.customLayout" />
-                <n-card class="body-card" v-else :title="($route.meta.name as string)" :bordered="false">
+                <n-card
+                  class="body-card"
+                  :class="{ 'body-card--pin': pin }"
+                  v-else
+                  :title="($route.meta.name as string)"
+                  :bordered="false"
+                >
                   <component :is="Component" />
                 </n-card>
               </transition>
@@ -66,7 +72,7 @@ import layoutNotice from './Components/layout-notice.vue'
 import layoutAvator from './Components/layout-avator.vue'
 
 const $route = useRoute()
-console.log($route.matched)
+console.log($route)
 const { options } = router
 const layoutRoutes: RouteRecordRaw[] = []
 // 生成导航
@@ -76,6 +82,10 @@ const navigations = computed(() => {
       name: route.meta?.name
     }
   })
+})
+const pin = computed(() => {
+  if ($route.meta.pinLayout) return true
+  return false
 })
 options.routes.forEach((route) => {
   const meta: metaAlias = route.meta
@@ -260,6 +270,12 @@ function renderIcon(icon: string) {
       min-height: calc(100vh - 152px);
       box-shadow: 0 1px 6px 0 rgb(0 0 0 / 5%);
     }
+    .body-card--pin {
+      height: calc(100vh - 152px);
+    }
+  }
+  &__body--pin {
+    height: calc(100% - 60px);
   }
 }
 .component-fade-enter-active,

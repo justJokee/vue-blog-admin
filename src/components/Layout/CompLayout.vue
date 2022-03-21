@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<propsType>(), {
     flex-grow: 1;
   }
   &__col-1 {
-    width: 290px;
+    width: 320px;
     flex: 0 0 auto;
   }
 }

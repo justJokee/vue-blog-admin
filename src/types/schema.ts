@@ -30,6 +30,37 @@ export interface categorySchema {
   createTime: Date
   updateTime: Date
 }
+// 首页统计
+export interface countSchema {
+  req: never
+  res: {
+    total: {
+      article: number | string
+      visitor: number | string
+      comment: number | string
+      msgBoard: number | string
+    }
+  }
+}
+
+// 首页 访客设备统计
+export interface deviceSchema {
+  req: never
+  res: {
+    browser: Array<{ name: string; value: number }>
+    system: Array<{ name: string; value: number }>
+  }
+}
+export interface historySchema {
+  req: {
+    start: Date | number
+    end: Date | number
+  }
+  res: {
+    date: string
+    value: number
+  }
+}
 export interface articleSchema {
   req: {
     page?: number
