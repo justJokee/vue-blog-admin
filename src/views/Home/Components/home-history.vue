@@ -3,7 +3,7 @@
     <n-card>
       <template #header>
         <div class="home-history__title">
-          <span>访客数量6</span>
+          <span>访客数量</span>
           <n-select
             v-model:value="shortCut"
             @update:value="handleChange"
@@ -12,20 +12,22 @@
           />
         </div>
       </template>
+      <!-- <div style="width: 800px; border: 1px solid red"></div> -->
       <div class="home-history__ins" />
     </n-card>
+    <div class="history-empty" v-if="history && !history.length">暂无数据</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { SelectOption } from 'naive-ui'
-// import moment from 'moment'
-// import 'moment/dist/locale/zh-cn'
+import moment from 'moment'
+import 'moment/dist/locale/zh-cn'
 import { historySchema, ECOption } from '@/types/'
 import echarts from '@/utils/echarts'
 import api from '@/api/home'
-
+const resizeObserver = ref<ResizeObserver>()
 const history = ref<historySchema['res'][]>()
 const shortCut = ref('week')
 const shortCuts = ref<SelectOption[]>([
@@ -33,34 +35,65 @@ const shortCuts = ref<SelectOption[]>([
   { label: '本月', value: 'month' }
 ])
 let lastShortCut = 'week'
-let hisInstance = null
+let hisInstance: any = null
 onMounted(async () => {
   getHistory()
 })
-function handleChange(value) {
+function handleChange(value: string) {
   if (value === lastShortCut) return
   lastShortCut = value
   getHistory()
 }
 async function getHistory() {
+  let start = moment()
+    .startOf(shortCut.value as moment.unitOfTime.StartOf)
+    .valueOf()
+  let end = moment()
+    .endOf(shortCut.value as moment.unitOfTime.StartOf)
+    .valueOf()
+
   const { data, status } = await api.getHistory({
-    end: '2023-01-01',
-    start: '2020-01-01'
+    start,
+    end
   })
   if (status === 200) {
     history.value = data
-    initHistoryPie()
+    if (!hisInstance) initHistoryPie()
+    else updateHistoryPie()
   }
 }
-function initHistoryPie() {
-  const el = document.querySelector('.home-history__ins')
+function updateHistoryPie() {
   const xd = history.value?.map((item) => item.date.substring(2))
   const yv = history.value?.map((item) => item.value)
+  let end = 100
+  if (shortCut.value === 'month' && xd && xd.length > 15) end = 50
   const option: ECOption = {
+    dataZoom: [{ type: 'inside', start: 0, end }],
+
+    xAxis: {
+      data: xd
+    },
+
+    series: [
+      {
+        data: yv
+      }
+    ]
+  }
+  hisInstance.setOption(option)
+}
+function initHistoryPie() {
+  const el = document.querySelector('.home-history__ins') as HTMLElement
+  const xd = history.value?.map((item) => item.date.substring(2))
+  const yv = history.value?.map((item) => item.value)
+  let end = 100
+  if (shortCut.value === 'month' && xd && xd.length > 15) end = 50
+  const option: ECOption = {
+    animation: true,
     tooltip: {
       trigger: 'axis'
     },
-    dataZoom: [{ type: 'inside', start: 0, end: shortCut.value === 'week' ? 100 : 50 }],
+    dataZoom: [{ type: 'inside', start: 0, end }],
     grid: {
       left: '42px',
       right: '42px',
@@ -107,11 +140,21 @@ function initHistoryPie() {
   }
   hisInstance = echarts.init(el as HTMLElement)
   hisInstance.setOption(option)
+  const resizeObserver = ref<ResizeObserver>(
+    new ResizeObserver(() => {
+      echarts.getInstanceByDom(el)?.resize()
+    })
+  )
+  resizeObserver.value.observe(document.querySelector('.mp-layout__body') as Element)
 }
+onUnmounted(() => {
+  resizeObserver.value?.disconnect()
+})
 </script>
 
 <style lang="scss">
 .home-history {
+  position: relative;
   width: 100%;
   height: 100%;
   &__title {
@@ -125,6 +168,23 @@ function initHistoryPie() {
   &__ins {
     width: 100%;
     height: 100%;
+  }
+  &__ins--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 12px;
+    color: #ccc;
+  }
+  .history-empty {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    font-size: 12px;
+    color: #ccc;
   }
 }
 </style>

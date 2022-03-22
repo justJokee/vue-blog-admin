@@ -17,6 +17,7 @@ export interface meta {
   // 图标
   icon?: any
   beMenu?: boolean
+  exclude?: boolean
 }
 export interface httpRes<T> {
   status: number

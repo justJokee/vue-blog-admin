@@ -35,6 +35,15 @@
     // vue相关
     "vue/singleline-html-element-content-newline": "off",
     "vue/max-attributes-per-line": "off",
-    "vue/attributes-order": "off"
+    "vue/attributes-order": "off",
+    "vue/html-self-closing": [
+      "warn",
+      {
+        "html": {
+          "void": "any",
+          "component": "always"
+        }
+      }
+    ]
   }
 }

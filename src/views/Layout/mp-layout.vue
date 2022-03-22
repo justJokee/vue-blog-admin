@@ -4,7 +4,7 @@
       <n-config-provider class="mp-layout__sider">
         <div class="mp-layout__site">
           <div class="site-ico">
-            <img src="~@/assets/img/site.png" alt="">
+            <img src="~@/assets/img/site.png" alt="" />
           </div>
           <div class="site-url">
             <a href="https://www.mapblog.cn">mapblog.cn</a>
@@ -72,7 +72,6 @@ import layoutNotice from './Components/layout-notice.vue'
 import layoutAvator from './Components/layout-avator.vue'
 
 const $route = useRoute()
-console.log($route)
 const { options } = router
 const layoutRoutes: RouteRecordRaw[] = []
 // 生成导航
@@ -102,26 +101,16 @@ layoutRoutes.map((route: RouteRecordRaw) => {
       const subRoutePath: string = /(.*)\/:/.test(subRoute.path)
         ? (/(.*)\/:/.exec(subRoute.path) as RegExpExecArray)[1]
         : subRoute.path
-      const menu = {
-        type: 'group',
-
-        label: () =>
-          h(
-            RouterLink,
-            {
-              to: {
-                name: subRoute.name
-              }
-            },
-            {
-              default: () => subRoute.meta?.name
-            }
-          ),
-        key: route.path + '/' + subRoutePath,
-        icon: subRoute.meta?.icon ? renderIcon(subRoute.meta?.icon as string) : undefined
+      if (!subRoute.meta?.exclude) {
+        const menu = generateMenu(subRoute, route.path + '/' + subRoutePath)
+        children.push(menu)
       }
-      children.push(menu)
     })
+  } else {
+    if (!route.meta?.exclude) {
+      const menu = generateMenu(route, route.path)
+      children.push(menu)
+    }
   }
   // 作为顶级菜单
   if (route.meta?.asTopMenu) {
@@ -136,8 +125,28 @@ layoutRoutes.map((route: RouteRecordRaw) => {
     menuOptions.push(...children)
   }
 })
-// const expandedKes = ref<string[]>([])
 
+function generateMenu(route: RouteRecordRaw, key: string) {
+  return {
+    type: 'group',
+
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: route.name
+          }
+        },
+        {
+          default: () => route.meta?.name
+        }
+      ),
+    key,
+    icon: route.meta?.icon ? renderIcon(route.meta?.icon as string) : undefined
+  }
+}
+// const expandedKes = ref<string[]>([])
 // function handleUpdateExpandedValue(keys: Array<string>) {
 //   console.log('接收到折叠的key--->>>>', keys)
 //   expandedKes.value = keys
@@ -186,6 +195,7 @@ function renderIcon(icon: string) {
     }
   }
   &__sider {
+    flex-shrink: 0;
     height: 100vh;
     overflow: hidden;
     padding: 0 16px;

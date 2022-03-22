@@ -1,38 +1,48 @@
 <template>
   <div class="home-device">
-    <n-grid x-gap="24" :cols="2">
-      <n-gi>
+    <n-row gutter="24">
+      <n-col :span="12">
         <n-card title="浏览器偏好" :bordered="false">
           <div class="home-device__browser" />
         </n-card>
-      </n-gi>
-      <n-gi>
+      </n-col>
+      <n-col :span="12">
         <n-card title="操作系统" :bordered="false">
           <div class="home-device__system" />
         </n-card>
-      </n-gi>
-    </n-grid>
+      </n-col>
+    </n-row>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { deviceSchema, ECOption } from '@/types/'
 import echarts from '@/utils/echarts'
 import api from '@/api/home'
+const resizeObserver = ref<ResizeObserver>()
 const device = ref<deviceSchema['res']>()
 let broInstance = ref<echarts.ECharts>()
 let sysInstance = ref<echarts.ECharts>()
 onMounted(async () => {
+  const bro = document.querySelector('.home-device__browser') as HTMLElement
+  const sys = document.querySelector('.home-device__system') as HTMLElement
   const { data, status } = await api.getDevice()
   if (status === 200) {
     device.value = data
-    initBrowserPie()
-    initSystemPie()
+    initBrowserPie(bro)
+    initSystemPie(sys)
+    const resizeObserver = ref<ResizeObserver>(
+      new ResizeObserver(() => {
+        echarts.getInstanceByDom(bro)?.resize()
+        echarts.getInstanceByDom(sys)?.resize()
+      })
+    )
+    resizeObserver.value.observe(document.querySelector('.mp-layout__body') as Element)
   }
 })
-function initBrowserPie() {
-  const el = document.querySelector('.home-device__browser')
+function initBrowserPie(bro: HTMLElement) {
+  const el = bro
   const option: ECOption = {
     tooltip: {},
     series: [
@@ -45,8 +55,8 @@ function initBrowserPie() {
   broInstance.value = echarts.init(el as HTMLElement)
   broInstance.value.setOption(option)
 }
-function initSystemPie() {
-  const el = document.querySelector('.home-device__system')
+function initSystemPie(sys: HTMLElement) {
+  const el = sys
   const option: ECOption = {
     tooltip: {},
     series: [
@@ -59,6 +69,10 @@ function initSystemPie() {
   sysInstance.value = echarts.init(el as HTMLElement)
   sysInstance.value.setOption(option)
 }
+
+onUnmounted(() => {
+  resizeObserver.value?.disconnect()
+})
 </script>
 
 <style lang="scss">

@@ -83,6 +83,7 @@ onMounted(async () => {
   height: 100%;
   .n-card__content {
     display: flex;
+    overflow: hidden;
     // justify-content: center;
   }
   &__content {
@@ -116,6 +117,7 @@ onMounted(async () => {
     color: rgba(34, 176, 125, 1);
   }
   &__icon {
+    flex: 0 0 auto;
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -125,6 +127,16 @@ onMounted(async () => {
     padding: 8px;
     [class^='el-icon'] {
       font-size: 22px;
+    }
+  }
+  &__info {
+    .info-name,
+    .info-total {
+      transition: all 0.38s ease-in-out;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
   }
 }

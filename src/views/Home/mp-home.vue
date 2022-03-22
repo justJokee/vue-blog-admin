@@ -39,7 +39,8 @@ import homeSite from './Components/home-site.vue'
   height: 100%;
   &__left {
     height: 100%;
-    .n-grid {
+    .n-grid,
+    .n-row {
       height: 100%;
     }
     .n-card {
@@ -59,6 +60,12 @@ import homeSite from './Components/home-site.vue'
   &__device {
     height: 40%;
     padding: 14px 0;
+    .n-col {
+      height: 100%;
+      > div {
+        height: 100%;
+      }
+    }
   }
   &__history {
     height: 40%;

@@ -17,9 +17,6 @@ interface propsType {
 const props = withDefaults(defineProps<propsType>(), {
   column: 0
 })
-// const style = computed(() => {
-//   const
-// })
 </script>
 <style lang="scss">
 .comp-layout {
@@ -32,7 +29,7 @@ const props = withDefaults(defineProps<propsType>(), {
     padding: 0 16px;
   }
   &__col-0 {
-    flex-grow: 1;
+    flex: 1 1 auto;
   }
   &__col-1 {
     width: 320px;

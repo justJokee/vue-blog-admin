@@ -2,7 +2,7 @@
  * @desc api schema
  * @author justJokee
  */
-
+import type { Moment } from 'moment'
 export interface userSchema {
   user: string
   password: string
@@ -53,8 +53,8 @@ export interface deviceSchema {
 }
 export interface historySchema {
   req: {
-    start: Date | number
-    end: Date | number
+    start: Date | number | Moment
+    end: Date | number | Moment
   }
   res: {
     date: string
@@ -98,17 +98,23 @@ export interface test {
   excloudContent?: number
 }
 export interface commentSchema {
-  name: string
-  imgUrl: string
-  email: string
-  content: string
-  link: string
-  like: number
-  aite: string
-  articleId: number
-  title: string
-  date: Date
-  parentId: string
+  req: {
+    page?: number
+    limit?: number
+  }
+  res: {
+    name: string
+    imgUrl: string
+    email: string
+    content: string
+    link: string
+    like: number
+    aite: string
+    articleId: number
+    title: string
+    date: Date
+    parentId: string
+  }
 }
 export interface msgBoardSchema {
   name: string
@@ -157,4 +163,19 @@ export interface commentIpSchema {
   like: number
   createTime: Date
   updateTime: Date
+}
+interface viewersSchema {
+  ip: string
+  count: number
+  browser: string
+  system: string
+  date: Date
+}
+
+export interface viewersCountSchema {
+  req: never
+  res: {
+    total: number
+    latest: viewersSchema
+  }
 }
