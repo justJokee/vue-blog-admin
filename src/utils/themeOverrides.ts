@@ -5,7 +5,6 @@
 
 import { GlobalThemeOverrides } from 'naive-ui'
 export const themeOverrides: GlobalThemeOverrides = {
-  Button: { textColor: '#FF0000' },
   Menu: {
     groupTextColor: '#5d7dc6',
     itemTextColor: '#879dd2',

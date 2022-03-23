@@ -17,6 +17,6 @@ export default {
   },
   // 存储文章
   saveArticle<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES>> {
-    return http('post', '/api/front/article/save', payload)
+    return http('post', '/api/admin/article/save', payload)
   }
 }

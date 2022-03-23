@@ -22,13 +22,14 @@ export interface visitorsSchema {
 }
 // 文章分类
 export interface categorySchema {
-  name: {
-    type: string
-    required: true
+  req: never
+  res: {
+    _id: string
+    name: string
+    total: number
+    createTime: Date
+    updateTime: Date
   }
-  total: number
-  createTime: Date
-  updateTime: Date
 }
 // 首页统计
 export interface countSchema {

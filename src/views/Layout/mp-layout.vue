@@ -10,9 +10,12 @@
             <a href="https://www.mapblog.cn">mapblog.cn</a>
           </div>
         </div>
-        <n-layout-sider :native-scrollbar="false" :width="258">
+        <n-layout-sider class="mp-layout__sider-content" :native-scrollbar="false" :width="258">
           <n-menu :options="menuOptions" :value="$route.path" :accordion="accordion" />
         </n-layout-sider>
+        <div class="mp-layout__sider-draft">
+          <new-draft />
+        </div>
       </n-config-provider>
       <n-layout class="mp-layout__content-wrapper">
         <div class="mp-layout__content">
@@ -70,6 +73,7 @@ import { metaAlias } from '@/types/'
 import { getRandomCharacter } from '@/utils/getRandomCharacter'
 import layoutNotice from './Components/layout-notice.vue'
 import layoutAvator from './Components/layout-avator.vue'
+import newDraft from '@/views/Components/new-draft.vue'
 
 const $route = useRoute()
 const { options } = router
@@ -200,7 +204,8 @@ function renderIcon(icon: string) {
     overflow: hidden;
     padding: 0 16px;
     > .n-layout-sider {
-      height: calc(100% - 86px);
+      // height: calc(100% - 86px);
+      height: calc(100% - 486px);
       [class^='el-icon-'] {
         font-size: 18px;
         // font-weight: bold;
@@ -235,6 +240,14 @@ function renderIcon(icon: string) {
         color: #344bbb;
       }
     }
+  }
+  &__sider-content {
+    // margin-top: 12px;
+  }
+  &__sider-draft {
+    height: 400px;
+    width: 100%;
+    padding: 12px 12px 42px 12px;
   }
   &__content-wrapper {
     @include themeify() {

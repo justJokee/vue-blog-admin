@@ -12,6 +12,8 @@ const articles = () => import('@/views/Articles/mp-articles.vue')
 const comments = () => import('@/views/Comments/mp-comments.vue')
 const messages = () => import('@/views/Messages/mp-messages.vue')
 const doc = () => import('@/views/Write/mp-doc.vue')
+const pwd = () => import('@/views/System/mp-db.vue')
+const exportdb = () => import('@/views/System/mp-exportdb.vue')
 interface metaType {
   meta?: meta
 }
@@ -35,7 +37,7 @@ const routes: Array<RouteRecordRawStrict> = [
     path: '/view',
     component: MpLayout,
     meta: {
-      name: '文章管理',
+      name: '首页',
       asTopMenu: false
     },
     children: [
@@ -45,7 +47,7 @@ const routes: Array<RouteRecordRawStrict> = [
         name: 'home',
         component: home,
         meta: {
-          icon: 'el-icon-document',
+          icon: 'el-icon-sunrise',
           name: '首页',
           customLayout: 1,
           pinLayout: 1
@@ -59,7 +61,7 @@ const routes: Array<RouteRecordRawStrict> = [
     component: MpLayout,
     meta: {
       name: '文章管理',
-      asTopMenu: true
+      asTopMenu: false
     },
     children: [
       // 文章管理
@@ -133,6 +135,35 @@ const routes: Array<RouteRecordRawStrict> = [
           name: '写作',
           icon: 'el-icon-edit',
           exclude: 1
+        }
+      }
+    ]
+  },
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '系统',
+      icon: '',
+      asTopMenu: true
+    },
+    children: [
+      {
+        path: 'pwd',
+        name: 'pwd',
+        component: pwd,
+        meta: {
+          name: '修改密码',
+          icon: 'el-icon-edit'
+        }
+      },
+      {
+        path: 'exportdb',
+        name: 'exportdb',
+        component: exportdb,
+        meta: {
+          name: '数据备份',
+          icon: 'el-icon-suitcase'
         }
       }
     ]

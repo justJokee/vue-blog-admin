@@ -15,16 +15,12 @@
 </template>
 
 <script lang="ts" setup>
-interface catalogField {
-  level: number
-  level_tree: number
-  name: string
-  order: number | string
-  children: Array<catalogField>
-}
+import { flatTree } from '@/types/'
+
 interface propsType {
-  catalogs: Array<catalogField>
+  catalogs: Array<flatTree>
 }
+
 defineProps<propsType>()
 </script>
 
