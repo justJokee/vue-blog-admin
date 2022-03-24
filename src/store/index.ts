@@ -1,11 +1,12 @@
 import { InjectionKey } from 'vue'
 import { createStore, Store, useStore as useBaseStore } from 'vuex'
-
+import { categorySchema } from '@/types/'
 export interface State {
   userInfo: {
     name: string
     avator: string
   }
+  categories: categorySchema['res'][]
 }
 
 // 定义 injection key
@@ -16,9 +17,14 @@ export const store = createStore<State>({
     userInfo: {
       name: 'Marco',
       avator: 'https://avatars.githubusercontent.com/u/35912907?v=4'
-    }
+    },
+    categories: []
   },
-  mutations: {}
+  mutations: {
+    setCategories(state: State, categories: categorySchema['res'][]) {
+      state.categories = categories
+    }
+  }
 })
 
 export function useStore() {

@@ -56,7 +56,7 @@ function updateShow(val: boolean) {
     padding: 12px 0;
     font-size: 12px;
     @include themeify() {
-      color: themed('color-draft-card');
+      color: themed('color-text-comment');
     }
   }
   &__foot {

@@ -128,9 +128,20 @@ function compileCodeBlock(content: string, initCodeBlockConfig?: any): string {
 }
 </script>
 <style lang="scss">
+@import '@/style/index.scss';
+
 .comp-editor {
   #editor {
-    min-height: 400px;
+    // height: 800px;
+    height: calc(100vh - 102px);
+  }
+  @include scrollBar;
+  .ql-toolbar,
+  .ql-container.ql-snow {
+    border: none;
+  }
+  .ql-toolbar {
+    border-bottom: 1px solid #f5f5f5;
   }
 }
 </style>

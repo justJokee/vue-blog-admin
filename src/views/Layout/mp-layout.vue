@@ -289,6 +289,7 @@ function renderIcon(icon: string) {
   &__body {
     min-height: calc(100% - 60px);
     padding-top: 28px;
+    padding-bottom: 28px;
     .body-card {
       min-height: calc(100vh - 152px);
       box-shadow: 0 1px 6px 0 rgb(0 0 0 / 5%);

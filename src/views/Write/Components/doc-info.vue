@@ -71,20 +71,24 @@
   </n-modal>
 </template>
 <script lang="ts" setup>
-import { ref, computed, watchEffect, onMounted } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from '@/store/'
 import type { UploadCustomRequestOptions, UploadFileInfo, FormRules, SelectOption } from 'naive-ui'
-import { articleSchema, categorySchema } from '@/types/'
+import { articleSchema } from '@/types/'
 import { recommandTags } from '@/utils/recommandTags'
 import api from '@/api/'
+
 interface propsType {
   edit?: number
   articleId?: number
   publish?: number
   show: boolean
+  initData?: Partial<articleSchema['res']>
 }
 interface emitsProps {
   (e: 'update:show', show: boolean): void
+  (e: 'update:edit-info', info: Partial<articleSchema['res']>): void
 }
 // type articleType = res<Partial<articleSchema['res']>>
 const props = withDefaults(defineProps<propsType>(), {
@@ -94,12 +98,12 @@ const props = withDefaults(defineProps<propsType>(), {
 const emit = defineEmits<emitsProps>()
 // defineExpose({ submit })
 const $router = useRouter()
+const $store = useStore()
 const customTag = ref('')
 const fetching = ref(false)
 const title = computed(() => {
   return props.edit ? '编辑文档' : '新建文档'
 })
-const categories = ref<categorySchema['res'][]>()
 const article = ref<Partial<articleSchema['res']>>({
   original: 1,
   title: '',
@@ -125,50 +129,58 @@ const rules: FormRules = {
 }
 const fileList = ref<UploadFileInfo[]>([])
 let qiniuToken: string = ''
-onMounted(async () => {
-  const { status, data } = await api.getCategory()
-  if (status === 200) {
-    categories.value = data
 
-    categoriesOptions.value = data.map((cate, index) => {
-      if (index === 0) article.value.categoryId = cate._id
-      return {
-        label: cate.name,
-        value: cate._id
-      }
-    })
-  }
+watchEffect(() => {
+  categoriesOptions.value = $store.state.categories.map((cate, index) => {
+    if (index === 0) article.value.categoryId = cate._id
+    return {
+      label: cate.name,
+      value: cate._id
+    }
+  })
 })
+
 watchEffect(async (onInvalidate) => {
   onInvalidate(() => {})
   // 编辑模式初始化
-  if (props.edit && props.articleId) {
-    const { data, status } = await api.getArticle({
-      publish: props.publish,
-      articleId: props.articleId,
-      excloudContent: 0
-    })
+  if (props.edit) {
+    if (props.articleId) {
+      const { data, status } = await api.getArticle({
+        publish: props.publish,
+        articleId: props.articleId,
+        excloudContent: 0
+      })
 
-    if (status === 200) {
-      article.value = data
-      fileList.value = [
-        {
-          id: '',
-          name: '',
-          status: 'finished',
-          url: data.headerPic
-        }
-      ]
+      if (status === 200) {
+        article.value = data
+      }
     }
+
+    if (props.initData) {
+      // article.value = props.initData
+      for (let key in article.value) {
+        // eslint-disable-next-line @typescript-eslint/no-extra-semi
+        ;(article.value as Record<string, any>)[key] = (props.initData as Record<string, any>)[key]
+      }
+    }
+    fileList.value = [
+      {
+        id: '',
+        name: '',
+        status: 'finished',
+        url: article.value.headerPic
+      }
+    ]
   }
 })
 async function submit() {
   fetching.value = true
   // 编辑文档
   if (props.edit) {
-    const { data, status } = await api.saveArticle(article.value)
+    const { data, status } = await api.editArticle(article.value)
     if (status === 200) {
       //
+      emit('update:edit-info', article.value)
       console.log(data)
     }
   }
@@ -178,7 +190,7 @@ async function submit() {
     const { data, status } = await api.saveArticle(article.value)
     if (status === 200) {
       emit('update:show', false)
-      $router.push({ name: 'doc', params: { articleId: data.articleId } })
+      $router.push({ name: 'doc', params: { publish: 0, articleId: data.articleId } })
 
       console.log('文档存储成功--->>>>', data)
     }

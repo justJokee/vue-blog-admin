@@ -128,7 +128,7 @@ const routes: Array<RouteRecordRawStrict> = [
     },
     children: [
       {
-        path: 'doc/:articleId?',
+        path: 'doc/:publish/:articleId?',
         name: 'doc',
         component: doc,
         meta: {
