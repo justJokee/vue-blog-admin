@@ -13,12 +13,12 @@ import editorToolbarOptions from '@/utils/editorToolbarOptions'
 import { imageHandler } from '@/utils/imageHandler'
 
 interface propsType {
-  modelValue: string
+  modelValue: string | undefined
   initValue?: string
 }
 
 interface emitsType {
-  (e: 'update:modelValue', content: string): void
+  (e: 'update:modelValue', content?: string): void
   (e: 'change', content: string): void
 }
 
@@ -78,7 +78,6 @@ onMounted(() => {
   const el = document.querySelector('#editor > .ql-editor')
   quill.on('text-change', function () {
     content = (el as Element).innerHTML
-    console.log('富文本html--->>>>', { str: el?.innerHTML })
     content = compileCodeBlock(content)
     emit('update:modelValue', content)
     emit('change', content)
@@ -88,7 +87,7 @@ onMounted(() => {
 watch(
   () => props.initValue,
   (initValue: string | undefined) => {
-    if (initValue && quill) {
+    if (initValue !== undefined && quill) {
       initEditorValue(initValue)
     }
   }
@@ -105,7 +104,6 @@ function compileCodeBlock(content: string, initCodeBlockConfig?: any): string {
   // 初始化赋值行为，解析存储代码块语言
   if (initCodeBlockConfig) {
     const blocks = content.match(codeBlockReg)
-    console.log('这是blocks--->>>>>', blocks)
 
     if (blocks && blocks.length) {
       blocks.forEach((pre, index) => {

@@ -8,15 +8,15 @@ let binder: any = null
 
 export default function handleSelectLanguage(quill: Quill, IS_CODING: Ref<boolean>): void {
   tippy('.ql-code-block', {
-    content: `<ul class = "xixi"><li data-lang='language-javascript'>javascript</li><li data-lang='language-css'>css</li></ul>`,
+    content: `<ul class = "language-list"><li data-lang='language-javascript'>javascript</li><li data-lang='language-css'>css</li></ul>`,
     allowHTML: true,
     trigger: 'click',
     theme: 'light',
     interactive: true,
-
+    placement: 'bottom',
     onMount(instance) {
       // ...
-      const node = document.querySelector('.xixi')
+      const node = document.querySelector('.language-list')
       binder = handler.bind(null, instance, quill)
       node?.addEventListener('click', binder, false)
     },
@@ -28,9 +28,8 @@ export default function handleSelectLanguage(quill: Quill, IS_CODING: Ref<boolea
 }
 
 function handler(instance: any, quill: Quill, event: MouseEvent): void {
-  console.log('点击的事件--->>>', instance, (event.target as HTMLElement).dataset)
   const dataset = (event.target as HTMLElement).dataset
-  const qq = document.querySelector('.xixi')
+  const qq = document.querySelector('.language-list')
   qq?.removeEventListener('click', binder, false)
   quill.format('code-block', dataset.lang, 'silent')
   instance.hide()

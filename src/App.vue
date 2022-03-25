@@ -1,6 +1,8 @@
 <template>
   <n-config-provider :theme-overrides="themeOverrides">
-    <router-view />
+    <n-message-provider>
+      <router-view />
+    </n-message-provider>
   </n-config-provider>
 </template>
 <script setup lang="ts">

@@ -9,9 +9,4 @@
 <script lang="ts" setup>
 import docEditor from './Components/doc-editor.vue'
 </script>
-<style lang="scss">
-.mp-doc {
-  &__editor {
-  }
-}
-</style>
+<style lang="scss"></style>

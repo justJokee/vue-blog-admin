@@ -88,3 +88,14 @@ a {
     }
   }
 }
+.language-list {
+  li {
+    cursor: pointer;
+    padding: 4px 12px;
+  }
+  li:hover {
+    @include themeify() {
+      color: themed('color-ele-primary');
+    }
+  }
+}

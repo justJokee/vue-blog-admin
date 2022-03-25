@@ -69,7 +69,9 @@ export interface articleSchema {
     articleId?: number
     original?: number
     publish?: number
+    content?: string
     excloudContent?: number
+    editing?: number
   }
   res: {
     articleId: number
@@ -78,13 +80,13 @@ export interface articleSchema {
     title: string
     abstract: string
     content: string
-    content_plain: string
     headerPic: string
     publish: number
     tag: string[]
     commentNum: number
     likeNum: number
     pv: number
+    editing: number
     createTime: Date
     updateTime: Date
   }

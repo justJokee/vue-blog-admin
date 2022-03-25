@@ -14,7 +14,7 @@
       </div>
       <div class="header__handle">
         <n-space>
-          <n-button type="info" v-if="!article.publish" @click="submit(0)">保存</n-button>
+          <n-button type="info" @click="submit()">保存</n-button>
           <n-button type="info" @click="submit(1)">{{ handleText }}</n-button>
         </n-space>
 
@@ -66,14 +66,14 @@
           :show="show"
           :init-data="article"
           @update:show="updateShow"
-          @update:editInfo="updateArticleInfo"
+          @update:edit-info="updateArticleInfo"
         />
       </div>
     </div>
 
     <div class="doc-editor__content">
       <div class="doc-editor__body">
-        <comp-editor v-model="content" :init-value="initValue" @change="handleChange" />
+        <comp-editor v-model="article.content" :init-value="initValue" @change="handleChange" />
       </div>
       <div class="doc-editor__catalog">
         <div class="catlog__title">
@@ -92,19 +92,18 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from '@/store/'
-import { DropdownOption } from 'naive-ui'
+import { DropdownOption, useMessage } from 'naive-ui'
 import { articleSchema, flatTree } from '@/types/'
 import { formatDate } from '@/utils/formatDate'
 import TreeFolder from '@/views/Components/tree-folder.vue'
 import generateHTree from '@/utils/generateHTree'
 import docInfo from './doc-info.vue'
 import api from '@/api'
-
+const $message = useMessage()
 const $route = useRoute()
 const $store = useStore()
 const show = ref(false)
-const initValue = ref('')
-const content = ref('')
+const initValue = ref()
 const catalogs = ref<flatTree[]>([])
 const options = ref<DropdownOption[]>()
 const article = ref<Partial<articleSchema['res']>>({
@@ -121,6 +120,8 @@ const handleText = computed(() => {
   if (article.value.publish) return '更新'
   return '发布'
 })
+let contentSign: string = ''
+
 onMounted(() => {
   getArticle()
 })
@@ -138,17 +139,35 @@ const category = computed(() => {
   return category
 })
 async function submit(publish?: number) {
-  console.log(publish)
+  if (!publish && article.value.content === contentSign) {
+    $message.warning('未检查到更新')
+    return
+  }
+  let merge: any = {}
+  if (publish) merge = { publish: 1, editing: 0 }
+  else merge = { publish: article.value.publish, editing: 1 }
+
+  const { status, data } = await api.editArticle({
+    articleId: article.value.articleId,
+    content: article.value.content,
+    ...merge
+  })
+  if (status === 200) {
+    article.value.publish = data.publish
+    $message.success(`${merge.editing ? '保存编辑成功' : '发布成功'}`)
+  }
+  console.log(data)
   // const { status, data } = api
 }
 async function getArticle() {
-  const { status, data } = await api.getArticle({
+  const { status, data } = await api.getDraft({
     articleId: parseInt($route.params.articleId as string),
     publish: parseInt($route.params.publish as string)
   })
   if (status === 200) {
     article.value = data
     initValue.value = data.content
+    contentSign = data.content
     generateOptions()
   }
 }

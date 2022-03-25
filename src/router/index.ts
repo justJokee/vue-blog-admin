@@ -122,13 +122,13 @@ const routes: Array<RouteRecordRawStrict> = [
     path: '/view',
     component: MpLayout,
     meta: {
-      name: '写作',
+      name: '文档',
       icon: '',
       asTopMenu: false
     },
     children: [
       {
-        path: 'doc/:publish/:articleId?',
+        path: 'doc/:articleId?',
         name: 'doc',
         component: doc,
         meta: {

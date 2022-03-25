@@ -90,7 +90,6 @@ interface emitsProps {
   (e: 'update:show', show: boolean): void
   (e: 'update:edit-info', info: Partial<articleSchema['res']>): void
 }
-// type articleType = res<Partial<articleSchema['res']>>
 const props = withDefaults(defineProps<propsType>(), {
   edit: 1,
   publish: 1
@@ -157,7 +156,6 @@ watchEffect(async (onInvalidate) => {
     }
 
     if (props.initData) {
-      // article.value = props.initData
       for (let key in article.value) {
         // eslint-disable-next-line @typescript-eslint/no-extra-semi
         ;(article.value as Record<string, any>)[key] = (props.initData as Record<string, any>)[key]
@@ -177,20 +175,20 @@ async function submit() {
   fetching.value = true
   // 编辑文档
   if (props.edit) {
-    const { data, status } = await api.editArticle(article.value)
+    const articleId = props.initData ? props.initData.articleId : props.articleId
+    const { data, status } = await api.editArticle({ ...article.value, articleId })
     if (status === 200) {
-      //
+      article.value = data
       emit('update:edit-info', article.value)
-      console.log(data)
+      emit('update:show', false)
     }
   }
   // 新增文档
   else {
-    //
     const { data, status } = await api.saveArticle(article.value)
     if (status === 200) {
       emit('update:show', false)
-      $router.push({ name: 'doc', params: { publish: 0, articleId: data.articleId } })
+      $router.push({ name: 'doc', params: { articleId: data.articleId } })
 
       console.log('文档存储成功--->>>>', data)
     }

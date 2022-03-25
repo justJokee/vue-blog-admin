@@ -15,6 +15,10 @@ export default {
   getArticle<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES>> {
     return http('get', '/api/front/article/detail', payload)
   },
+  // 获取文章详情
+  getDraft<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES>> {
+    return http('get', '/api/admin/article/getDraft', payload)
+  },
   // 存储文章
   saveArticle<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES>> {
     return http('post', '/api/admin/article/save', payload)
