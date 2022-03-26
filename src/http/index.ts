@@ -24,7 +24,7 @@ function ajax<REQ, RES>(type: Method, url: string, options: REQ): Promise<RES> {
       method: type,
       url: url,
       baseURL: import.meta.env.PROD ? (import.meta.env.VITE_BASE_API as string) : undefined,
-      params: type === 'get' ? options : null,
+      params: ['get', 'delete'].includes(type) ? options : null,
       data: type !== 'get' ? qs.stringify(options) : null
     })
       .then((res) => {

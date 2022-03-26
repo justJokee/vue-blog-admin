@@ -64,14 +64,17 @@ export interface historySchema {
 }
 export interface articleSchema {
   req: {
+    id?: any
     page?: number
     limit?: number
     articleId?: number
+    categoryId?: string
     original?: number
     publish?: number
     content?: string
     excloudContent?: number
     editing?: number
+    keyword?: string
   }
   res: {
     articleId: number

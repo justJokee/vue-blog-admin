@@ -125,8 +125,8 @@ let contentSign: string = ''
 onMounted(() => {
   getArticle()
 })
-watch($route, () => {
-  getArticle()
+watch($route, (to, from) => {
+  if (to.name === 'doc' && from.name === 'doc') getArticle()
 })
 
 const category = computed(() => {

@@ -26,5 +26,13 @@ export default {
   // 编辑文章
   editArticle<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES>> {
     return http('patch', '/api/admin/article/edit', payload)
+  },
+  // 删除文章
+  delArticle<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES>> {
+    return http('delete', '/api/admin/article/del', payload)
+  },
+  // 筛选文章
+  searchArticle<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES>> {
+    return http('delete', '/api/admin/article/search', payload)
   }
 }
