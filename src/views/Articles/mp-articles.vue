@@ -2,16 +2,18 @@
   <div class="mp-articles">
     <div class="mp-articles__header">
       <div class="header-filter">
-        <mp-articles-filter />
+        <mp-articles-filter v-model="filters" />
       </div>
       <div class="header-batchdel">
-        <n-button type="info" @click="preDeleteArticle(dels, true)">筛选</n-button>
-        <n-button type="error" :disabled="!dels?.length" @click="preDeleteArticle(dels, true)">批量删除</n-button>
+        <n-space>
+          <n-button type="info" @click="filterArticles(true)">筛选</n-button>
+          <n-button type="error" :disabled="!dels?.length" @click="preDeleteArticle(dels, true)">批量删除</n-button>
+        </n-space>
       </div>
     </div>
     <div class="mp-articles__body">
       <n-data-table
-        ref="table"
+        remote
         :columns="columns"
         :data="articles"
         :pagination="pagination"
@@ -49,9 +51,11 @@ const pagination = reactive({
   page: 1,
   pageSize: 10,
   showSizePicker: true,
+  itemCount: 0,
   pageSizes: [10, 20, 50, 100],
   onChange: (page: number) => {
     pagination.page = page
+
     getArticles()
   },
   onUpdatePageSize: (pageSize: number) => {
@@ -59,10 +63,20 @@ const pagination = reactive({
     pagination.page = 1
     getArticles()
   }
+  // prefix({ itemCount }) {
+  //   return `Total is ${itemCount}.`
+  // }
 })
 const dels = ref<string[]>()
 const articles = ref<Partial<articleSchema['res']>[]>()
 const article = ref<Partial<articleSchema['res']>>()
+const filters = ref({
+  keyword: undefined,
+  publish: undefined,
+  categoryId: undefined,
+  original: undefined,
+  editing: undefined
+})
 const columns: DataTableColumns = [
   {
     type: 'selection'
@@ -286,14 +300,46 @@ const columns: DataTableColumns = [
   }
 ]
 getArticles()
-async function getArticles() {
-  const { data, status } = await api.getArticles({
+function getArticles() {
+  // 判断是否存在筛选条件
+  const filter = Object.keys(filters.value).some((key) => {
+    const cur = filters.value[key as keyof typeof filters.value]
+    return cur !== undefined && cur !== null && cur !== ''
+  })
+
+  if (filter) filterArticles()
+  else fetchArticles()
+}
+// 直接获取文档列表
+async function fetchArticles() {
+  const { status, data, total } = await api.getArticles({
     publish: publish.value,
     page: pagination.page,
     limit: pagination.pageSize
   })
   if (status === 200) {
     articles.value = data
+    pagination.itemCount = total as number
+  }
+}
+// 筛选文档
+async function filterArticles(btnTrigger?: boolean) {
+  if (btnTrigger) pagination.page = 1
+  const params: any = {}
+  for (let key in filters.value) {
+    const k = key as keyof typeof filters.value
+    if (filters.value[k] !== undefined && filters.value[k] !== null && filters.value[k] !== '') {
+      params[k] = filters.value[k]
+    }
+  }
+  const { status, data, total } = await api.searchArticle({
+    ...params,
+    page: pagination.page,
+    limit: pagination.pageSize
+  })
+  if (status === 200) {
+    articles.value = data
+    pagination.itemCount = total as number
   }
 }
 function handleCheck(val: any) {
@@ -305,6 +351,7 @@ function updateShow(val: boolean) {
 function updateArticleInfo(info: Partial<articleSchema['res']>) {
   article.value = Object.assign(article.value, info)
 }
+
 async function deleteArticle(dels: any) {
   const { status } = await api.delArticle({
     id: dels

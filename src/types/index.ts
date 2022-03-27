@@ -22,6 +22,8 @@ export interface meta {
 export interface httpRes<T> {
   status: number
   data: T
+  total?: number
+  totalAll?: number
   info: string
 }
 export type httpMethods = 'get' | 'post' | 'put' | 'delete' | 'patch'

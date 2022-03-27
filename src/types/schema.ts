@@ -107,6 +107,8 @@ export interface commentSchema {
   req: {
     page?: number
     limit?: number
+    articleId?: number
+    keyword?: string
   }
   res: {
     name: string
@@ -117,9 +119,9 @@ export interface commentSchema {
     like: number
     aite: string
     articleId: number
-    title: string
     date: Date
     parentId: string
+    reply?: Array<commentSchema['res']>
   }
 }
 export interface msgBoardSchema {

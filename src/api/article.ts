@@ -32,7 +32,7 @@ export default {
     return http('delete', '/api/admin/article/del', payload)
   },
   // 筛选文章
-  searchArticle<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES>> {
-    return http('delete', '/api/admin/article/search', payload)
+  searchArticle<RES = articleSchema['res']>(payload: REQ): Promise<httpRes<RES[]>> {
+    return http('get', '/api/admin/article/search', payload)
   }
 }

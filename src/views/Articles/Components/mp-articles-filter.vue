@@ -9,30 +9,41 @@
         <n-select v-model:value="conditions.publish" :options="publishOptions" clearable />
       </n-form-item>
       <n-form-item label="分类：" path="original">
-        <n-select v-model:value="conditions.categoryId" :options="categoryOptions" />
+        <n-select v-model:value="conditions.categoryId" :options="categoryOptions" clearable />
       </n-form-item>
       <n-form-item label="是否原创：" path="original">
-        <n-select v-model:value="conditions.original" :options="originalOptions" />
+        <n-select v-model:value="conditions.original" :options="originalOptions" clearable />
       </n-form-item>
       <n-form-item label="是否编辑中：" path="original">
-        <n-select v-model:value="conditions.editing" :options="editingOptions" />
+        <n-select v-model:value="conditions.editing" :options="editingOptions" clearable />
       </n-form-item>
     </n-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 // import { SelectOption } from 'naive-ui'
 import { articleSchema } from '@/types/'
 import { useStore } from '@/store/'
 const $store = useStore()
-const conditions = ref<Partial<articleSchema['req']>>({
+interface propsType {
+  modelValue: Partial<articleSchema['req']>
+}
+interface emitesType {
+  (e: 'update:modelValue', value: Partial<articleSchema['req']>): void
+}
+defineProps<propsType>()
+const emits = defineEmits<emitesType>()
+const conditions = ref({
   keyword: undefined,
   publish: undefined,
   categoryId: undefined,
   original: undefined,
   editing: undefined
+})
+watch(conditions.value, () => {
+  emits('update:modelValue', conditions.value)
 })
 const publishOptions = [
   { label: '发布', value: 1 },
