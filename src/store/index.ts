@@ -1,11 +1,13 @@
 import { InjectionKey } from 'vue'
 import { createStore, Store, useStore as useBaseStore } from 'vuex'
 import { categorySchema } from '@/types/'
+import api from '@/api/news'
 export interface State {
   userInfo: {
     name: string
     avator: string
   }
+  unreadNewsTotal: number
   categories: categorySchema['res'][]
 }
 
@@ -18,11 +20,21 @@ export const store = createStore<State>({
       name: 'Marco',
       avator: 'https://avatars.githubusercontent.com/u/35912907?v=4'
     },
-    categories: []
+    categories: [],
+    unreadNewsTotal: 0
   },
   mutations: {
     setCategories(state: State, categories: categorySchema['res'][]) {
       state.categories = categories
+    }
+  },
+  actions: {
+    // 获取未读消息
+    async getUnreadNewsTotal({ state }) {
+      const { status, total } = await api.getUnreadNewsTotal()
+      if (status === 200) {
+        state.unreadNewsTotal = total as number
+      }
     }
   }
 })

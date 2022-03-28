@@ -95,22 +95,25 @@ export interface articleSchema {
   }
 }
 
-export interface test {
-  page?: number
-  limit?: number
-  articleId?: number
-  original?: number
-  publish?: number
-  excloudContent?: number
-}
 export interface commentSchema {
   req: {
+    // _id?: string
+    id?: string | string[]
     page?: number
     limit?: number
-    articleId?: number
+    articleId?: number | number[]
     keyword?: string
+    name?: string
+    imgUrl?: string
+    email?: string
+    content?: string
+    link?: string
+    like?: number
+    aite?: string | null
+    parentId?: string | null
   }
   res: {
+    _id: string
     name: string
     imgUrl: string
     email: string
@@ -125,37 +128,61 @@ export interface commentSchema {
   }
 }
 export interface msgBoardSchema {
-  name: string
-  imgUrl: string
-  email: string
-  content: string
-  link: string
-  like: number
-  aite: string
-  parentId: string
-  date: Date
+  req: {
+    id?: string | string[]
+    page?: number
+    limit?: number
+    keyword?: string
+    name?: string
+    imgUrl?: string
+    email?: string
+    content?: string
+    link?: string
+    like?: number
+    aite?: string | null
+    parentId?: string | null
+  }
+  res: {
+    _id: string
+    name: string
+    imgUrl: string
+    email: string
+    content: string
+    link: string
+    like: number
+    aite: string
+    parentId: string
+    date: Date
+  }
 }
 
 export interface newsSchema {
-  type: string
-  // 文章评论/留言板
-  name: string
-  ip: string
-  lng: string
-  lat: string
-  date: Date
-  // 国际区域
-  nation: string
-  // 省份
-  province: string
-  city: string
-  // 区域
-  district: string
-  // 存储 _id
-  articleId: string
-  commentId: string
-  leaveMessageId: string
-  content: string
+  req: {
+    id?: string | string[]
+    type?: 'pv' | 'msgboard' | 'comment'
+    read?: number
+  }
+  res: {
+    type: 'pv' | 'msgboard' | 'comment'
+    // 文章评论/留言板
+    name: string
+    ip: string
+    lng: string
+    lat: string
+    date: Date
+    // 国际区域
+    nation: string
+    // 省份
+    province: string
+    city: string
+    // 区域
+    district: string
+    // 存储 _id
+    articleId: string
+    commentId: string
+    leaveMessageId: string
+    content: string
+  }
 }
 export interface commentIpSchema {
   ip: {
@@ -185,5 +212,17 @@ export interface viewersCountSchema {
   res: {
     total: number
     latest: viewersSchema
+  }
+}
+
+export interface qiniuSchema {
+  req: {
+    file: File
+    // 文件名
+    key: string
+    token: string
+  }
+  res: {
+    token: string
   }
 }

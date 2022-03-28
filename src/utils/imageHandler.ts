@@ -1,6 +1,7 @@
 /**
  * @desc quill编辑器image handler
  * @param {*} value
+ * @author justJokee
  */
 import api from '@/api/qiniu'
 import { Quill, RangeStatic } from 'quill'
@@ -28,11 +29,9 @@ async function handleUpload(quill: Quill) {
         const index = (quill.getSelection() as RangeStatic).index
         quill.insertEmbed(index, 'image', import.meta.env.VITE_BASE_URL_QINIU + uploadRes.data.key)
         quill.setSelection(index + 1, 0)
-
-        console.log('这是七牛res--->>>>', uploadRes)
       }
     }
-  } catch (e) {
-    //
+  } catch (e: any) {
+    throw new Error(e)
   }
 }

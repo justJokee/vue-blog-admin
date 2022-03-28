@@ -11,6 +11,7 @@ const home = () => import('@/views/Home/mp-home.vue')
 const articles = () => import('@/views/Articles/mp-articles.vue')
 const comments = () => import('@/views/Comments/mp-comments.vue')
 const messages = () => import('@/views/Messages/mp-messages.vue')
+const news = () => import('@/views/News/mp-news.vue')
 const doc = () => import('@/views/Write/mp-doc.vue')
 const pwd = () => import('@/views/System/mp-db.vue')
 const exportdb = () => import('@/views/System/mp-exportdb.vue')
@@ -96,7 +97,7 @@ const routes: Array<RouteRecordRawStrict> = [
       }
     ]
   },
-  // // 留言管理
+  // 留言管理
   {
     path: '/view',
     component: MpLayout,
@@ -117,7 +118,28 @@ const routes: Array<RouteRecordRawStrict> = [
       }
     ]
   },
-  // // 写作管理
+  // 消息管理
+  {
+    path: '/view',
+    component: MpLayout,
+    meta: {
+      name: '消息管理',
+      icon: '',
+      asTopMenu: false
+    },
+    children: [
+      {
+        path: 'news',
+        name: 'news',
+        component: news,
+        meta: {
+          name: '消息',
+          icon: 'el-icon-chat-line-round'
+        }
+      }
+    ]
+  },
+  // 写作管理
   {
     path: '/view',
     component: MpLayout,

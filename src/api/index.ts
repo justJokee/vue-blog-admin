@@ -2,6 +2,8 @@ import article from './article'
 import home from './home'
 import category from './category'
 import comments from './comments'
+import msgboard from './msgboard'
+import news from './news'
 import qiniu from './qiniu'
 
 export default {
@@ -9,5 +11,7 @@ export default {
   ...qiniu,
   ...home,
   ...comments,
-  ...category
+  ...category,
+  ...msgboard,
+  ...news
 }

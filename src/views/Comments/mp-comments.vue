@@ -4,7 +4,7 @@
       <div class="header-filter">
         <mp-articles-filter v-model="filters" />
       </div>
-      <div class="header-batchdel">
+      <div class="header-handle">
         <n-space>
           <n-button type="info" @click="filterComments(true)">筛选</n-button>
           <n-button type="error" :disabled="!dels?.length" @click="preDeleteComments(dels, true)">批量删除</n-button>
@@ -19,6 +19,7 @@
         :data="comments"
         :pagination="pagination"
         :row-key="(row) => row._id"
+        :checked-row-keys="dels"
         @update:checked-row-keys="handleCheck"
       />
     </div>
@@ -52,8 +53,10 @@ const $message = useMessage()
 // 评论和留言均按照一级留言进行分页查询，因此 total为一级评论数量，totalAll为表数据总数
 const totalAll = ref(0)
 const modalShow = ref(false)
-const reply = ref<Partial<commentSchema['res']>>()
+const replyTarget = ref<Partial<commentSchema['res']>>()
 const replyContent = ref('')
+// 评论模式  1：回复 0：增加文章一级评论
+const replyMode = ref(1)
 const pagination = reactive({
   page: 1,
   defaultPageSize: 10,
@@ -78,10 +81,7 @@ const dels = ref<string[]>()
 const comments = ref<Partial<commentSchema['res']>[]>()
 const filters = ref({
   keyword: undefined,
-  publish: undefined,
-  categoryId: undefined,
-  original: undefined,
-  editing: undefined
+  articleId: undefined
 })
 const columns: DataTableColumns = [
   {
@@ -91,7 +91,18 @@ const columns: DataTableColumns = [
     title: '昵称',
     key: 'name',
     width: 200,
-
+    render(row) {
+      const text: any = row.name
+      return h(
+        'span',
+        {
+          style: {
+            color: row.admin ? '#eaa156' : 'inherit'
+          }
+        },
+        text
+      )
+    },
     ellipsis: {
       tooltip: true
     }
@@ -107,7 +118,7 @@ const columns: DataTableColumns = [
   {
     title: '文章id',
     key: 'articleId',
-    width: 200
+    width: 120
   },
   {
     title: '点赞',
@@ -142,7 +153,7 @@ const columns: DataTableColumns = [
         'span',
         {
           style: {
-            color: row.admin ? 'orange' : 'inherit'
+            color: row.admin ? '#eaa156' : 'inherit'
           }
         },
         text
@@ -152,6 +163,8 @@ const columns: DataTableColumns = [
   {
     title: '评论时间',
     key: 'date',
+    width: 150,
+
     ellipsis: {
       tooltip: true
     },
@@ -175,7 +188,8 @@ const columns: DataTableColumns = [
                 size: 'tiny',
                 type: 'info',
                 onClick() {
-                  reply.value = row
+                  replyMode.value = 1
+                  replyTarget.value = row
                   modalShow.value = true
                 }
               },
@@ -183,7 +197,22 @@ const columns: DataTableColumns = [
                 default: () => '回复'
               }
             ),
-
+            h(
+              NButton,
+              {
+                text: true,
+                size: 'tiny',
+                type: 'info',
+                onClick() {
+                  replyMode.value = 0
+                  replyTarget.value = row
+                  modalShow.value = true
+                }
+              },
+              {
+                default: () => '文章评论'
+              }
+            ),
             h(
               NButton,
               {
@@ -204,10 +233,12 @@ const columns: DataTableColumns = [
     }
   }
 ]
-
+// 初始化列表
 getComments()
+
 const replyTitle = computed(() => {
-  return '回复 ' + reply.value?.name + '：'
+  if (replyMode.value) return '回复 ' + replyTarget.value?.name + '：'
+  else return '新增评论：'
 })
 function getComments() {
   // 判断是否存在筛选条件
@@ -245,15 +276,11 @@ async function filterComments(btnTrigger?: boolean) {
   const params: any = {}
   for (let key in filters.value) {
     const k = key as keyof typeof filters.value
-    if (
-      filters.value[k] !== undefined &&
-      filters.value[k] !== null &&
-      typeof filters.value[k] === 'string' &&
-      filters.value[k] !== ''
-    ) {
+    if (filters.value[k] !== undefined && filters.value[k] !== null && filters.value[k] !== '') {
       params[k] = filters.value[k]
     }
   }
+  if ($route.params.articleId) params.articleId = $route.params.articleId
 
   const { status, data, total } = await api.searchComments({
     ...params,
@@ -269,17 +296,48 @@ async function filterComments(btnTrigger?: boolean) {
 // 提交回复
 async function submitReply() {
   if (!replyContent.value) return
+  // 回复一级评论或者二级评论，均将一级评论作为父id
+  const parentId = replyTarget.value?.parentId ? replyTarget.value?.parentId : replyTarget.value?._id
+  const { status } = await api.saveComments({
+    articleId: replyTarget.value?.articleId,
+    name: import.meta.env.VITE_REPLY_NAME,
+    imgUrl: import.meta.env.VITE_REPLY_IMGURL,
+    email: import.meta.env.VITE_REPLY_EMAIL,
+    link: import.meta.env.VITE_REPLY_LINK,
+    content: replyContent.value,
+    parentId: replyMode.value ? parentId : null,
+    aite: replyMode.value ? replyTarget.value?.name : null
+  })
+
+  if (status === 200) {
+    modalShow.value = false
+    replyContent.value = ''
+    $message.success(replyMode.value ? '评论成功' : '回复成功')
+    getComments()
+  }
 }
 function handleCheck(val: any) {
   dels.value = val
 }
 
-async function deleteArticle(dels: any) {
-  const { status } = await api.delArticle({
-    id: dels
+async function delComment(delId: any) {
+  let articleIds: any
+  if (typeof delId === 'string') {
+    articleIds = comments.value?.find((item) => item._id === delId)?.articleId
+  } else {
+    articleIds = []
+    delId.forEach((_id: string) => {
+      const id = comments.value?.find((item) => item._id === _id)?.articleId
+      articleIds.push(id)
+    })
+  }
+  const { status } = await api.delComment({
+    id: delId,
+    articleId: articleIds
   })
   if (status === 200) {
-    $message.success('删除成功')
+    dels.value = []
+    $message.success('删除评论成功')
     getComments()
   }
 }
@@ -291,7 +349,7 @@ function preDeleteComments(dels: any, batch: boolean = false) {
     negativeText: '再想想',
     onPositiveClick() {
       const id = batch ? dels : dels._id
-      deleteArticle(id)
+      delComment(id)
     }
   })
 }
@@ -308,7 +366,7 @@ function preDeleteComments(dels: any, batch: boolean = false) {
       width: 80%;
       flex: 0 1 auto;
     }
-    .header-batchdel {
+    .header-handle {
       flex: 0 1 auto;
     }
   }

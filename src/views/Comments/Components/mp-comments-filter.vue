@@ -1,7 +1,7 @@
 <template>
   <div class="mp-comments-filter">
-    <n-form inline :label-width="80" :model="conditions" label-placement="left">
-      <n-form-item label="昵称/内容：">
+    <n-form inline :label-width="90" :model="conditions" label-placement="left">
+      <n-form-item label="昵称 / 内容：">
         <n-input v-model:value="conditions.keyword" placeholder="请输入标题或正文内容" />
       </n-form-item>
       <n-form-item label="设备id：">

@@ -161,14 +161,17 @@ watchEffect(async (onInvalidate) => {
         ;(article.value as Record<string, any>)[key] = (props.initData as Record<string, any>)[key]
       }
     }
-    fileList.value = [
-      {
-        id: '',
-        name: '',
-        status: 'finished',
-        url: article.value.headerPic
-      }
-    ]
+    fileList.value = []
+    if (article.value.headerPic) {
+      fileList.value = [
+        {
+          id: '',
+          name: '',
+          status: 'finished',
+          url: article.value.headerPic
+        }
+      ]
+    }
   }
 })
 async function submit() {
@@ -189,8 +192,6 @@ async function submit() {
     if (status === 200) {
       emit('update:show', false)
       $router.push({ name: 'doc', params: { articleId: data.articleId } })
-
-      console.log('文档存储成功--->>>>', data)
     }
   }
 
@@ -214,7 +215,6 @@ async function customRequest({ file, onFinish, onError }: UploadCustomRequestOpt
         qiniuToken = data.token
       } else return
     }
-    console.log(file, qiniuToken)
 
     const { data, status } = await api.qiniuUpload({
       file: file.file as File,
@@ -230,9 +230,9 @@ async function customRequest({ file, onFinish, onError }: UploadCustomRequestOpt
           url: (import.meta.env.VITE_BASE_URL_QINIU + data.key) as string
         }
       ]
+      article.value.headerPic = (import.meta.env.VITE_BASE_URL_QINIU + data.key) as string
       onFinish()
     } else onError()
-    console.log(file, data, qiniuToken)
   } catch (e) {
     onError()
   }

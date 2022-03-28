@@ -1,5 +1,5 @@
 /**
- * @desc 文章操作
+ * @desc 文档管理
  * @author justJokee
  */
 
