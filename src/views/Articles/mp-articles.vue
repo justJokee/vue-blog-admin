@@ -77,6 +77,7 @@ const filters = ref({
   original: undefined,
   editing: undefined
 })
+
 const columns: DataTableColumns = [
   {
     type: 'selection'

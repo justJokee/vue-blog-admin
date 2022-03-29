@@ -4,10 +4,17 @@
  */
 import type { Moment } from 'moment'
 export interface userSchema {
-  user: string
-  password: string
-  lastLogin: string
-  salt: string
+  req: {
+    account?: string
+    password?: string
+  }
+  res: {
+    uid?: string
+    token?: string
+    account?: string
+    avatar?: string
+    lastLoginTime?: Date
+  }
 }
 export interface visitorsSchema {
   name: string

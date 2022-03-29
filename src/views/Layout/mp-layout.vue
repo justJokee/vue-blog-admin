@@ -36,7 +36,7 @@
                     <layout-notice />
                   </div>
                   <div class="navbar-user__avator">
-                    <layout-avator />
+                    <layout-avatar />
                   </div>
                 </div>
               </template>
@@ -72,7 +72,7 @@ import { RouteRecordRaw, RouterLink, useRoute } from 'vue-router'
 import { metaAlias } from '@/types/'
 import { getRandomCharacter } from '@/utils/getRandomCharacter'
 import layoutNotice from './Components/layout-notice.vue'
-import layoutAvator from './Components/layout-avator.vue'
+import layoutAvatar from './Components/layout-avatar.vue'
 import newDraft from '@/views/Components/new-draft.vue'
 
 const $route = useRoute()

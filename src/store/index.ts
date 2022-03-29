@@ -1,12 +1,9 @@
 import { InjectionKey } from 'vue'
 import { createStore, Store, useStore as useBaseStore } from 'vuex'
-import { categorySchema } from '@/types/'
+import { categorySchema, userSchema } from '@/types/'
 import api from '@/api/news'
 export interface State {
-  userInfo: {
-    name: string
-    avator: string
-  }
+  userInfo: userSchema['res']
   unreadNewsTotal: number
   categories: categorySchema['res'][]
 }
@@ -17,8 +14,8 @@ export const key: InjectionKey<Store<State>> = Symbol()
 export const store = createStore<State>({
   state: {
     userInfo: {
-      name: 'Marco',
-      avator: 'https://avatars.githubusercontent.com/u/35912907?v=4'
+      account: '',
+      avatar: ''
     },
     categories: [],
     unreadNewsTotal: 0
@@ -26,6 +23,15 @@ export const store = createStore<State>({
   mutations: {
     setCategories(state: State, categories: categorySchema['res'][]) {
       state.categories = categories
+    },
+    setUserInfo(state: State, info: userSchema['res']) {
+      state.userInfo = info
+    },
+    removeUserInfo(state: State) {
+      state.userInfo = {
+        account: '',
+        avatar: ''
+      }
     }
   },
   actions: {

@@ -17,6 +17,8 @@
   "dependencies": {
     "axios": "^0.26.1",
     "echarts": "^5.3.1",
+    "js-cookie": "^3.0.1",
+    "js-md5": "^0.7.3",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "qs": "^6.10.3",
@@ -28,6 +30,8 @@
   "devDependencies": {
     "@commitlint/cli": "^16.2.1",
     "@commitlint/config-conventional": "^16.2.1",
+    "@types/js-cookie": "^3.0.1",
+    "@types/js-md5": "^0.4.3",
     "@types/qs": "^6.9.7",
     "@types/quill": "^2.0.9",
     "@typescript-eslint/eslint-plugin": "^5.14.0",

@@ -1,6 +1,9 @@
 export * from './schema'
 import echarts from 'echarts'
+import { MessageApi } from 'naive-ui/lib/message/'
+
 import { PieSeriesOption, LineSeriesOption } from 'echarts/charts'
+
 import {
   TitleComponentOption,
   TooltipComponentOption,
@@ -56,6 +59,7 @@ declare global {
   interface Window {
     hljs: any
     qiniu: any
+    $message: MessageApi
   }
 }
 

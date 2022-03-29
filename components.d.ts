@@ -6,8 +6,10 @@ declare module 'vue' {
   export interface GlobalComponents {
     CompEditor: typeof import('./src/components/Editor/CompEditor.vue')['default']
     CompLayout: typeof import('./src/components/Layout/CompLayout.vue')['default']
+    ExposeMessage: typeof import('./src/components/ExposeMessage/ExposeMessage.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NBadge: typeof import('naive-ui')['NBadge']
+    NBitton: typeof import('naive-ui')['NBitton']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
     NCascader: typeof import('naive-ui')['NCascader']

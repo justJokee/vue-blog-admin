@@ -2,6 +2,7 @@
   <n-config-provider :theme-overrides="themeOverrides">
     <n-dialog-provider>
       <n-message-provider>
+        <expose-message />
         <router-view />
       </n-message-provider>
     </n-dialog-provider>
@@ -13,6 +14,7 @@ import api from '@/api/'
 import { themeOverrides } from '@/utils/themeOverrides'
 import { useStore } from '@/store/'
 const $store = useStore()
+
 onMounted(async () => {
   const { status, data } = await api.getCategory()
   if (status === 200) {

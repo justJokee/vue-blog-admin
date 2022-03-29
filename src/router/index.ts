@@ -4,8 +4,10 @@
  */
 
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { store } from '@/store/'
 import MpLayout from '@/views/Layout/mp-layout.vue'
 import { meta } from '@/types/'
+import { getUserInfo } from '@/utils/auth'
 const login = () => import('@/views/Login/mp-login.vue')
 const home = () => import('@/views/Home/mp-home.vue')
 const articles = () => import('@/views/Articles/mp-articles.vue')
@@ -196,5 +198,19 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 })
-
+// 路由拦截
+router.beforeEach((to, from, next) => {
+  // 白名单放行
+  if (['login'].includes(to.name as string)) {
+    next()
+    return
+  }
+  //  缺少登录信息
+  if (!store.state.userInfo.token || !getUserInfo()) {
+    window.$message.error('token不存在或已失效')
+    next({ name: 'login' })
+    return
+  }
+  next()
+})
 export default router

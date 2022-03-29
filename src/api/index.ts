@@ -4,6 +4,7 @@ import category from './category'
 import comments from './comments'
 import msgboard from './msgboard'
 import news from './news'
+import user from './user'
 import qiniu from './qiniu'
 
 export default {
@@ -13,5 +14,6 @@ export default {
   ...comments,
   ...category,
   ...msgboard,
-  ...news
+  ...news,
+  ...user
 }
