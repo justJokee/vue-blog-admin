@@ -1,7 +1,7 @@
-import axios, { Method } from 'axios'
+import axios, { Method, AxiosRequestConfig } from 'axios'
 import qs from 'qs'
 import { httpMethods } from '@/types/'
-import { getUserInfo } from '@/utils/auth'
+import { getUserInfo, removeUserInfo } from '@/utils/auth'
 import router from '@/router/'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 // request拦截器
@@ -27,14 +27,15 @@ axios.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-function ajax<REQ, RES>(type: Method, url: string, options: REQ): Promise<RES> {
+function ajax<REQ, RES>(type: Method, url: string, options: REQ, axiosConfig: AxiosRequestConfig): Promise<RES> {
   return new Promise((resolve, reject) => {
     axios({
       method: type,
       url: url,
       baseURL: import.meta.env.PROD ? (import.meta.env.VITE_BASE_API as string) : undefined,
       params: ['get', 'delete'].includes(type) ? options : null,
-      data: type !== 'get' ? qs.stringify(options) : null
+      data: type !== 'get' ? qs.stringify(options) : null,
+      ...axiosConfig
     })
       .then((res) => {
         if (res.status === 200) {
@@ -43,6 +44,7 @@ function ajax<REQ, RES>(type: Method, url: string, options: REQ): Promise<RES> {
             if (res.data.status.toString().startsWith('4')) {
               window.$message.error(res.data.info)
               if (router.currentRoute.value.name !== 'login') {
+                removeUserInfo()
                 router.push({ name: 'login' })
               }
             } else window.$message.warning(res.data.info)
@@ -59,8 +61,13 @@ function ajax<REQ, RES>(type: Method, url: string, options: REQ): Promise<RES> {
   })
 }
 
-export default function <REQ, RES>(method: httpMethods, url: string, options: REQ) {
-  return ajax<REQ, RES>(method, url, options)
+export default function <REQ, RES>(
+  method: httpMethods,
+  url: string,
+  options: REQ,
+  axiosConfig: AxiosRequestConfig = {}
+) {
+  return ajax<REQ, RES>(method, url, options, axiosConfig)
 }
 
 // function _message(t, m) {

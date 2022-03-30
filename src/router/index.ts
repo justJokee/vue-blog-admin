@@ -15,7 +15,7 @@ const comments = () => import('@/views/Comments/mp-comments.vue')
 const messages = () => import('@/views/Messages/mp-messages.vue')
 const news = () => import('@/views/News/mp-news.vue')
 const doc = () => import('@/views/Write/mp-doc.vue')
-const pwd = () => import('@/views/System/mp-db.vue')
+const pwd = () => import('@/views/System/mp-pwd.vue')
 const exportdb = () => import('@/views/System/mp-exportdb.vue')
 interface metaType {
   meta?: meta

@@ -16,6 +16,14 @@ export interface userSchema {
     lastLoginTime?: Date
   }
 }
+export interface resetpwdSchema {
+  req: {
+    uid?: string
+    oldPassword?: string
+    password?: string
+  }
+  res: Record<string, any>
+}
 export interface visitorsSchema {
   name: string
   imgUrl: string
