@@ -27,7 +27,7 @@ import 'moment/dist/locale/zh-cn'
 import { historySchema, ECOption } from '@/types/'
 import echarts from '@/utils/echarts'
 import api from '@/api/home'
-const resizeObserver = ref<ResizeObserver>()
+let resizeObserver: any = null
 const history = ref<historySchema['res'][]>()
 const shortCut = ref('week')
 const shortCuts = ref<SelectOption[]>([
@@ -140,15 +140,15 @@ function initHistoryPie() {
   }
   hisInstance = echarts.init(el as HTMLElement)
   hisInstance.setOption(option)
-  const resizeObserver = ref<ResizeObserver>(
-    new ResizeObserver(() => {
-      echarts.getInstanceByDom(el)?.resize()
-    })
-  )
-  resizeObserver.value.observe(document.querySelector('.mp-layout__body') as Element)
+  resizeObserver = new ResizeObserver(() => {
+    echarts.getInstanceByDom(el)?.resize()
+  })
+
+  resizeObserver.observe(document.querySelector('.mp-layout__body') as Element)
 }
 onUnmounted(() => {
-  resizeObserver.value?.disconnect()
+  resizeObserver?.disconnect()
+  hisInstance.dispose()
 })
 </script>
 

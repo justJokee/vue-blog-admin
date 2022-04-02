@@ -251,7 +251,7 @@ function setAllNewsRead() {
   })
 }
 async function delNews(delId: any) {
-  const { status } = await api.delMessages({
+  const { status } = await api.delNews({
     id: delId
   })
   if (status === 200) {

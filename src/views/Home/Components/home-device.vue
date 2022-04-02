@@ -20,7 +20,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import { deviceSchema, ECOption } from '@/types/'
 import echarts from '@/utils/echarts'
 import api from '@/api/home'
-const resizeObserver = ref<ResizeObserver>()
+let resizeObserver: any = null
 const device = ref<deviceSchema['res']>()
 let broInstance = ref<echarts.ECharts>()
 let sysInstance = ref<echarts.ECharts>()
@@ -32,13 +32,12 @@ onMounted(async () => {
     device.value = data
     initBrowserPie(bro)
     initSystemPie(sys)
-    const resizeObserver = ref<ResizeObserver>(
-      new ResizeObserver(() => {
-        echarts.getInstanceByDom(bro)?.resize()
-        echarts.getInstanceByDom(sys)?.resize()
-      })
-    )
-    resizeObserver.value.observe(document.querySelector('.mp-layout__body') as Element)
+    resizeObserver = new ResizeObserver(() => {
+      echarts.getInstanceByDom(bro)?.resize()
+      echarts.getInstanceByDom(sys)?.resize()
+    })
+
+    resizeObserver.observe(document.querySelector('.mp-layout__body') as Element)
   }
 })
 function initBrowserPie(bro: HTMLElement) {
@@ -71,7 +70,9 @@ function initSystemPie(sys: HTMLElement) {
 }
 
 onUnmounted(() => {
-  resizeObserver.value?.disconnect()
+  resizeObserver?.disconnect()
+  broInstance.value?.dispose()
+  sysInstance.value?.dispose()
 })
 </script>
 
