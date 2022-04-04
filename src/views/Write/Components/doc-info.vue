@@ -46,15 +46,21 @@
               点击上传
             </n-upload>
           </n-form-item>
-          <n-form-item label="分类" path="original">
+          <n-form-item label="分类">
             <n-select v-model:value="article.categoryId" :options="categoriesOptions" />
           </n-form-item>
-          <n-form-item label="原创" path="original">
+          <n-form-item label="原创">
             <n-radio-group v-model:value="article.original" name="radiogroup">
               <!-- <n-space> -->
               <n-radio :value="1">原创</n-radio>
               <n-radio :value="0">转载</n-radio>
               <!-- </n-space> -->
+            </n-radio-group>
+          </n-form-item>
+          <n-form-item v-if="props.edit" label="上下线">
+            <n-radio-group v-model:value="article.publish" name="radiogroup">
+              <n-radio :value="1">上线（发布）</n-radio>
+              <n-radio :value="0">下线（未发布）</n-radio>
             </n-radio-group>
           </n-form-item>
         </n-form>
@@ -75,6 +81,7 @@ import { ref, computed, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store/'
 import type { UploadCustomRequestOptions, UploadFileInfo, FormRules, SelectOption } from 'naive-ui'
+import { useMessage } from 'naive-ui'
 import { articleSchema } from '@/types/'
 import { recommandTags } from '@/utils/recommandTags'
 import api from '@/api/'
@@ -94,10 +101,12 @@ const props = withDefaults(defineProps<propsType>(), {
   edit: 1,
   publish: 1
 })
+
 const emit = defineEmits<emitsProps>()
 // defineExpose({ submit })
 const $router = useRouter()
 const $store = useStore()
+const $message = useMessage()
 const customTag = ref('')
 const fetching = ref(false)
 const title = computed(() => {
@@ -128,6 +137,8 @@ const rules: FormRules = {
 }
 const fileList = ref<UploadFileInfo[]>([])
 let qiniuToken: string = ''
+
+if (!props.edit) article.value.publish = 0
 
 watchEffect(() => {
   categoriesOptions.value = $store.state.categories.map((cate, index) => {
@@ -184,6 +195,7 @@ async function submit() {
       article.value = data
       emit('update:edit-info', article.value)
       emit('update:show', false)
+      $message.success('文档编辑成功')
     }
   }
   // 新增文档
@@ -191,6 +203,8 @@ async function submit() {
     const { data, status } = await api.saveArticle(article.value)
     if (status === 200) {
       emit('update:show', false)
+      $message.success('新建文档成功')
+
       $router.push({ name: 'doc', params: { articleId: data.articleId } })
     }
   }

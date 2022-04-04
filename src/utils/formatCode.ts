@@ -1,14 +1,35 @@
+/**
+ * @desc 添加代码块处理逻辑
+ * @author justJokee
+ */
 import type { Quill } from 'quill'
 import type { Ref } from 'vue'
 import tippy from 'tippy.js'
 import 'tippy.js/dist/tippy.css' // o
 import 'tippy.js/themes/light.css'
-
+const languages = [
+  { label: '标记语言', value: 'markup' },
+  { label: 'pug', value: 'pug' },
+  { label: 'css', value: 'css' },
+  { label: 'sass', value: 'sass' },
+  { label: 'javascript', value: 'javascript' },
+  { label: 'typescript', value: 'typescript' },
+  { label: 'Bash', value: 'bash' },
+  { label: 'jsx', value: 'jsx' },
+  { label: 'tsx', value: 'tsx' },
+  { label: 'java', value: 'java' },
+  { label: 'python', value: 'python' },
+  { label: 'rust', value: 'rust' },
+  { label: 'ruby', value: 'ruby' }
+]
 let binder: any = null
-
+let lisStr = ''
+languages.forEach((li) => {
+  lisStr += `<li data-lang='language-${li.value}'>${li.label}</li>`
+})
 export default function handleSelectLanguage(quill: Quill, IS_CODING: Ref<boolean>): void {
   tippy('.ql-code-block', {
-    content: `<ul class = "language-list"><li data-lang='language-javascript'>javascript</li><li data-lang='language-css'>css</li></ul>`,
+    content: `<ul class = "language-list">${lisStr}</ul>`,
     allowHTML: true,
     trigger: 'click',
     theme: 'light',

@@ -156,13 +156,10 @@ async function submit(publish?: number) {
     article.value.publish = data.publish
     $message.success(`${merge.editing ? '保存编辑成功' : '发布成功'}`)
   }
-  console.log(data)
-  // const { status, data } = api
 }
 async function getArticle() {
   const { status, data } = await api.getDraft({
-    articleId: parseInt($route.params.articleId as string),
-    publish: parseInt($route.params.publish as string)
+    articleId: parseInt($route.params.articleId as string)
   })
   if (status === 200) {
     article.value = data

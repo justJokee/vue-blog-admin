@@ -17,7 +17,6 @@ export default {
   },
   // 回复评论
   saveComments<RES = commentSchema['res']>(payload: REQ): Promise<httpRes<RES[]>> {
-    console.log('这是payloda-->>', payload)
     return http('post', '/api/admin/comments/save', payload)
   },
   // 删除评论

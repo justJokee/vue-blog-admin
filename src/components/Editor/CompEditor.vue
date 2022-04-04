@@ -6,9 +6,9 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
-import Quill, { generateCreate, reInitIndex } from '@/utils/quillHack'
+import Quill, { generateCreate } from '@/utils/quillHack'
 import 'quill/dist/quill.snow.css'
-import handleSelectLanguage from '@/utils/tippy'
+import handleSelectLanguage from '@/utils/formatCode'
 import editorToolbarOptions from '@/utils/editorToolbarOptions'
 import { imageHandler } from '@/utils/imageHandler'
 
@@ -75,12 +75,8 @@ onMounted(() => {
   }
   // tippy
   handleSelectLanguage(quill, IS_CODING)
-  const el = document.querySelector('#editor > .ql-editor')
   quill.on('text-change', function () {
-    content = (el as Element).innerHTML
-    content = compileCodeBlock(content)
-    emit('update:modelValue', content)
-    emit('change', content)
+    emitRichText()
   })
 })
 
@@ -92,12 +88,24 @@ watch(
     }
   }
 )
+// 派发数据
+function emitRichText() {
+  const el = document.querySelector('#editor > .ql-editor')
+  content = (el as Element).innerHTML
+  content = compileCodeBlock(content)
+  emit('update:modelValue', content)
+  emit('change', content)
+}
+
 // 初始化编辑器数据（回显）
 function initEditorValue(initValue: string) {
   // 生成language映射
   compileCodeBlock(initValue, initCodeBlockConfig)
   quill.clipboard.dangerouslyPasteHTML(initValue)
-  reInitIndex()
+  // 初始化成功后，派发经过处理后的富文本
+  setTimeout(() => {
+    emitRichText()
+  }, 0)
 }
 function compileCodeBlock(content: string, initCodeBlockConfig?: any): string {
   const codeBlockReg = /<pre\s+class\s*=\s*"(.*?)"(?:.|\s)*?<\/pre>/g
