@@ -232,7 +232,7 @@ async function customRequest({ file, onFinish, onError }: UploadCustomRequestOpt
 
     const { data, status } = await api.qiniuUpload({
       file: file.file as File,
-      key: `image/${file.name}`,
+      key: `images/article-cover/${Date.now()}.${file.name}`,
       token: qiniuToken
     })
     if (status === 200) {

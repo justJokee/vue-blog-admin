@@ -23,7 +23,7 @@ async function handleUpload(quill: Quill) {
         const extension = /.*\.(.*)$/g.exec(el.value)
         const uploadRes = await api.qiniuUpload({
           token: data.token,
-          key: `images/${Date.now()}.${extension ? extension[1] : 'png'}`,
+          key: `images/article-detail/${Date.now()}.${extension ? extension[1] : 'png'}`,
           file: el.files[0]
         })
         const index = (quill.getSelection() as RangeStatic).index
