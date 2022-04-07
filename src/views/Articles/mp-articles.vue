@@ -316,6 +316,7 @@ async function fetchArticles() {
   const { status, data, total } = await api.getArticles({
     publish: publish.value,
     page: pagination.page,
+    content: 0,
     limit: pagination.pageSize
   })
   if (status === 200) {

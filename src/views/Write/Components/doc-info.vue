@@ -37,9 +37,9 @@
           </n-form-item>
           <n-form-item label="封面图">
             <n-upload
-              :custom-request="customRequest"
               :on-remove="handleRemove"
-              v-model:file-list="fileList"
+              :on-update:file-list="handleFileListUpdate"
+              :file-list="fileList"
               list-type="image-card"
               accept=".png,.jpg,.jpeg,.svg,.gif,.bmp,.webp"
               :max="1"
@@ -81,7 +81,7 @@
 import { ref, computed, watchEffect, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store/'
-import type { UploadCustomRequestOptions, UploadFileInfo, FormRules, SelectOption } from 'naive-ui'
+import type { UploadFileInfo, FormRules, SelectOption } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import { articleSchema } from '@/types/'
 import { recommandTags } from '@/utils/recommandTags'
@@ -252,16 +252,30 @@ function addCustomTag() {
 }
 // 图片删除事件
 function handleRemove() {
+  fileList.value = []
   article.value.headerPic = ''
 }
 function handleCancel() {
   emit('update:show', false)
 }
+function handleFileListUpdate(list: UploadFileInfo[]) {
+  if (list.length) {
+    fileList.value = [
+      {
+        id: '',
+        status: 'uploading',
+        name: ''
+      }
+    ]
+    customRequest(list)
+  }
+}
 function updateShow(val: boolean) {
   emit('update:show', val)
 }
-async function customRequest({ file, onFinish, onError }: UploadCustomRequestOptions) {
+async function customRequest(list: UploadFileInfo[]) {
   try {
+    const file = list[0]
     if (!qiniuToken) {
       const { data, status } = await api.getQiniuToken()
       if (status === 200) {
@@ -283,11 +297,25 @@ async function customRequest({ file, onFinish, onError }: UploadCustomRequestOpt
           url: (import.meta.env.VITE_BASE_URL_QINIU + data.key) as string
         }
       ]
+
       article.value.headerPic = (import.meta.env.VITE_BASE_URL_QINIU + data.key) as string
-      onFinish()
-    } else onError()
+    } else {
+      fileList.value = [
+        {
+          id: '',
+          status: 'error',
+          name: ''
+        }
+      ]
+    }
   } catch (e) {
-    onError()
+    fileList.value = [
+      {
+        id: '',
+        status: 'error',
+        name: ''
+      }
+    ]
   }
 }
 </script>

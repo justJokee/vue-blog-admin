@@ -86,7 +86,7 @@ export interface articleSchema {
     categoryId?: string
     original?: number
     publish?: number
-    content?: string
+    content?: string | number
     excloudContent?: number
     editing?: number
     keyword?: string
