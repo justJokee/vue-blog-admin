@@ -38,6 +38,7 @@
           <n-form-item label="封面图">
             <n-upload
               :custom-request="customRequest"
+              :on-remove="handleRemove"
               v-model:file-list="fileList"
               list-type="image-card"
               accept=".png,.jpg,.jpeg,.svg,.gif,.bmp,.webp"
@@ -77,7 +78,7 @@
   </n-modal>
 </template>
 <script lang="ts" setup>
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watchEffect, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store/'
 import type { UploadCustomRequestOptions, UploadFileInfo, FormRules, SelectOption } from 'naive-ui'
@@ -139,7 +140,19 @@ const fileList = ref<UploadFileInfo[]>([])
 let qiniuToken: string = ''
 
 if (!props.edit) article.value.publish = 0
-
+onMounted(() => {
+  if (!props.edit) {
+    article.value.headerPic = '/img/cover/default.jpg'
+    fileList.value = [
+      {
+        id: '',
+        name: '',
+        status: 'finished',
+        url: '/img/cover/default.jpg'
+      }
+    ]
+  }
+})
 watchEffect(() => {
   categoriesOptions.value = $store.state.categories.map((cate, index) => {
     if (index === 0) article.value.categoryId = cate._id
@@ -149,9 +162,21 @@ watchEffect(() => {
     }
   })
 })
-
-watchEffect(async (onInvalidate) => {
-  onInvalidate(() => {})
+// 传入初始化值情况
+watch(
+  () => props.initData,
+  () => {
+    watchInitHandler()
+  }
+)
+// 传入articleId,让元件自己完成初始化
+watch(
+  () => props.articleId,
+  () => {
+    watchInitHandler()
+  }
+)
+async function watchInitHandler() {
   // 编辑模式初始化
   if (props.edit) {
     if (props.articleId) {
@@ -182,9 +207,19 @@ watchEffect(async (onInvalidate) => {
           url: article.value.headerPic
         }
       ]
+    } else {
+      fileList.value = [
+        {
+          id: '',
+          name: '',
+          status: 'finished',
+          url: '/img/cover/default.jpg'
+        }
+      ]
+      article.value.headerPic = '/img/cover/default.jpg'
     }
   }
-})
+}
 async function submit() {
   fetching.value = true
   // 编辑文档
@@ -214,6 +249,10 @@ async function submit() {
 function addCustomTag() {
   article.value.tag?.push(customTag.value)
   customTag.value = ''
+}
+// 图片删除事件
+function handleRemove() {
+  article.value.headerPic = ''
 }
 function handleCancel() {
   emit('update:show', false)
