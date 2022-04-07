@@ -248,7 +248,7 @@ function updateArticleInfo(info: Partial<articleSchema['res']>) {
   }
   &__catalog {
     width: 240px;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     padding: 12px;
     margin-left: 24px;
     border-left: 1px solid #e8e8e8;

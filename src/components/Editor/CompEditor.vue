@@ -140,6 +140,10 @@ function compileCodeBlock(content: string, initCodeBlockConfig?: any): string {
   #editor {
     // height: 800px;
     height: calc(100vh - 102px);
+    .ql-editor {
+      font-size: 14.5px !important;
+      line-height: 1.8 !important;
+    }
   }
   @include scrollBar;
   .ql-toolbar,
