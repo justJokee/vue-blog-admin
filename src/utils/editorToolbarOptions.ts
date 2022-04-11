@@ -27,6 +27,8 @@ export default [
   [{ font: [] }],
   // 对齐方式
   [{ align: [] }],
+  // 行内代码
+  ['code'],
   // 清除文本格式
   ['clean'],
   // 清除文本格式

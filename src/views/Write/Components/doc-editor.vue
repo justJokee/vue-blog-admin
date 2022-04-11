@@ -13,7 +13,10 @@
         </div>
       </div>
       <div class="header__handle">
-        <n-space>
+        <n-space align-items="center">
+          <div class="header__handle-info">
+            <span>{{ autoSaveRes }}</span>
+          </div>
           <n-button type="info" @click="submit()">保存</n-button>
           <n-button type="info" @click="submit(1)">{{ handleText }}</n-button>
         </n-space>
@@ -92,18 +95,21 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from '@/store/'
-import { DropdownOption, useMessage } from 'naive-ui'
+import { DropdownOption, useMessage, useDialog } from 'naive-ui'
 import { articleSchema, flatTree } from '@/types/'
 import { formatDate } from '@/utils/formatDate'
+import { getText, setText, removeText } from '@/utils/richText'
 import TreeFolder from '@/views/Components/tree-folder.vue'
 import generateHTree from '@/utils/generateHTree'
 import docInfo from './doc-info.vue'
 import api from '@/api'
 const $message = useMessage()
+const $dialog = useDialog()
 const $route = useRoute()
 const $store = useStore()
 const show = ref(false)
 const initValue = ref()
+const autoSaveRes = ref('')
 const catalogs = ref<flatTree[]>([])
 const options = ref<DropdownOption[]>()
 const article = ref<Partial<articleSchema['res']>>({
@@ -121,7 +127,6 @@ const handleText = computed(() => {
   return '发布'
 })
 let contentSign: string = ''
-
 onMounted(() => {
   getArticle()
 })
@@ -138,9 +143,9 @@ const category = computed(() => {
   })
   return category
 })
-async function submit(publish?: number) {
+async function submit(publish?: number, auto?: boolean) {
   if (!publish && article.value.content === contentSign) {
-    $message.warning('未检查到更新')
+    if (!auto) $message.warning('未检查到更新')
     return
   }
   let merge: any = {}
@@ -154,8 +159,22 @@ async function submit(publish?: number) {
   })
   if (status === 200) {
     article.value.publish = data.publish
-    $message.success(`${merge.editing ? '保存编辑成功' : '发布成功'}`)
+    article.value.updateTime = data.updateTime
+    contentSign = article.value.content as string
+    if (!auto) $message.success(`${merge.editing ? '保存编辑成功' : '发布成功'}`)
+    else {
+      autoSaveRes.value = `自动保存于 ${formatDate(data.updateTime)}`
+    }
+    // 保存或者发布成功后，删除本地存储
+    removeText()
   }
+}
+// 自动保存 / 5min
+function autoSave() {
+  setTimeout(() => {
+    submit(0, true)
+    autoSave()
+  }, 1000 * 60 * 5)
 }
 async function getArticle() {
   const { status, data } = await api.getDraft({
@@ -163,9 +182,29 @@ async function getArticle() {
   })
   if (status === 200) {
     article.value = data
-    initValue.value = data.content
     contentSign = data.content
     generateOptions()
+    // 如果本地有富文本存储，则说明最后一次编辑未经保存或者发布便退出了
+    // 应提示还原上一次编辑状态
+    if (getText()) {
+      $dialog.warning({
+        title: '提醒',
+        content: '系统检测到您存在未经保存的编辑，是否从本地存储还原？',
+        positiveText: '还原',
+        negativeText: '放弃',
+        onPositiveClick() {
+          initValue.value = getText()
+          article.value.content = getText() as string
+        },
+        onNegativeClick() {
+          initValue.value = data.content
+        }
+      })
+    } else {
+      initValue.value = data.content
+    }
+    // 开启自动保存定时
+    autoSave()
   }
 }
 function generateOptions() {
@@ -176,9 +215,12 @@ function generateOptions() {
     }
   ]
 }
-function handleChange(html: string) {
+function handleChange(html: string, firstInit?: boolean) {
   const folder = generateHTree(html)
   catalogs.value = folder
+  // 本地存储富文本
+  setText(html)
+  if (firstInit) removeText()
 }
 function showModal() {
   show.value = true
@@ -227,6 +269,13 @@ function updateArticleInfo(info: Partial<articleSchema['res']>) {
     .header__handle {
       display: flex;
       align-items: center;
+      &-info {
+        display: flex;
+        align-items: center;
+        color: #ccc;
+        font-size: 12px;
+        height: 100%;
+      }
       &-trigger {
         cursor: pointer;
         display: flex;

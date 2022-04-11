@@ -19,7 +19,7 @@ interface propsType {
 
 interface emitsType {
   (e: 'update:modelValue', content?: string): void
-  (e: 'change', content: string): void
+  (e: 'change', content: string, firstInit?: boolean): void
 }
 
 const props = defineProps<propsType>()
@@ -89,12 +89,12 @@ watch(
   }
 )
 // 派发数据
-function emitRichText() {
+function emitRichText(firstInit?: boolean) {
   const el = document.querySelector('#editor > .ql-editor')
   content = (el as Element).innerHTML
   content = compileCodeBlock(content)
   emit('update:modelValue', content)
-  emit('change', content)
+  emit('change', content, firstInit)
 }
 
 // 初始化编辑器数据（回显）
@@ -104,7 +104,7 @@ function initEditorValue(initValue: string) {
   quill.clipboard.dangerouslyPasteHTML(initValue)
   // 初始化成功后，派发经过处理后的富文本
   setTimeout(() => {
-    emitRichText()
+    emitRichText(true)
   }, 0)
 }
 function compileCodeBlock(content: string, initCodeBlockConfig?: any): string {
