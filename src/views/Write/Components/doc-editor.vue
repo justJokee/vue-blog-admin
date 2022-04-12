@@ -92,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from '@/store/'
 import { DropdownOption, useMessage, useDialog } from 'naive-ui'
@@ -127,8 +127,12 @@ const handleText = computed(() => {
   return '发布'
 })
 let contentSign: string = ''
+let timer: any = null
 onMounted(() => {
   getArticle()
+})
+onUnmounted(() => {
+  clearTimeout(timer)
 })
 watch($route, (to, from) => {
   if (to.name === 'doc' && from.name === 'doc') getArticle()
@@ -171,7 +175,7 @@ async function submit(publish?: number, auto?: boolean) {
 }
 // 自动保存 / 5min
 function autoSave() {
-  setTimeout(() => {
+  timer = setTimeout(() => {
     submit(0, true)
     autoSave()
   }, 1000 * 60 * 5)

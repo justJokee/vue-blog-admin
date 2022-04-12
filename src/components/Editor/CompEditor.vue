@@ -42,7 +42,8 @@ generateCreate(initCodeBlockConfig)
 onMounted(() => {
   quill = new Quill('#editor', {
     modules: {
-      syntax: true, // Include syntax module
+      // Include syntax module
+      syntax: true,
       clipboard: {
         // 解决html回显莫名其妙出现的</br>,原因不明，未深究
         matchVisual: false
@@ -128,6 +129,10 @@ function compileCodeBlock(content: string, initCodeBlockConfig?: any): string {
   }
   // 由编辑器产出的html字符串
   else {
+    content = content.replace(/(<pre\s+(?:.|\s)*?>)((?:.|\s)*?)(<\/pre>)/g, (match, p1, p2, p3) => {
+      const plainCode = p2.replace(/<.*?>/g, '')
+      return `${p1}${plainCode}${p3}`
+    })
     content = content.replace(/<pre\s+(.|\s)*?>/g, '$&<code>').replace(/<\/pre/g, '</code>$&')
   }
   return content
