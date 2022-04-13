@@ -92,6 +92,7 @@ export interface articleSchema {
     keyword?: string
   }
   res: {
+    _id: string
     articleId: number
     categoryId: string
     original: number

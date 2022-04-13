@@ -5,16 +5,19 @@
 
 const richTextKey = 'rich-text'
 
-export function getText() {
-  if (localStorage.getItem(richTextKey)) {
-    return localStorage.getItem(richTextKey)
+export function getText(_id: string) {
+  const key = `${richTextKey}_${_id}`
+  if (localStorage.getItem(key)) {
+    return localStorage.getItem(key)
   }
 }
-export function setText(text: string) {
+export function setText(_id: string, text: string) {
   if (text) {
-    localStorage.setItem(richTextKey, text)
+    const key = `${richTextKey}_${_id}`
+    localStorage.setItem(key, text)
   }
 }
-export function removeText() {
-  localStorage.removeItem(richTextKey)
+export function removeText(_id: string) {
+  const key = `${richTextKey}_${_id}`
+  localStorage.removeItem(key)
 }

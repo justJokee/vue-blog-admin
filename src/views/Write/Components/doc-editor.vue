@@ -103,6 +103,7 @@ import TreeFolder from '@/views/Components/tree-folder.vue'
 import generateHTree from '@/utils/generateHTree'
 import docInfo from './doc-info.vue'
 import api from '@/api'
+
 const $message = useMessage()
 const $dialog = useDialog()
 const $route = useRoute()
@@ -128,6 +129,7 @@ const handleText = computed(() => {
 })
 let contentSign: string = ''
 let timer: any = null
+
 onMounted(() => {
   getArticle()
 })
@@ -170,7 +172,7 @@ async function submit(publish?: number, auto?: boolean) {
       autoSaveRes.value = `自动保存于 ${formatDate(data.updateTime)}`
     }
     // 保存或者发布成功后，删除本地存储
-    removeText()
+    removeText(article.value._id as string)
   }
 }
 // 自动保存 / 5min
@@ -190,15 +192,15 @@ async function getArticle() {
     generateOptions()
     // 如果本地有富文本存储，则说明最后一次编辑未经保存或者发布便退出了
     // 应提示还原上一次编辑状态
-    if (getText()) {
+    if (getText(article.value._id as string)) {
       $dialog.warning({
         title: '提醒',
         content: '系统检测到您存在未经保存的编辑，是否从本地存储还原？',
         positiveText: '还原',
         negativeText: '放弃',
         onPositiveClick() {
-          initValue.value = getText()
-          article.value.content = getText() as string
+          initValue.value = getText(article.value._id as string)
+          article.value.content = getText(article.value._id as string) as string
         },
         onNegativeClick() {
           initValue.value = data.content
@@ -223,8 +225,8 @@ function handleChange(html: string, firstInit?: boolean) {
   const folder = generateHTree(html)
   catalogs.value = folder
   // 本地存储富文本
-  setText(html)
-  if (firstInit) removeText()
+  setText(article.value._id as string, html)
+  if (firstInit) removeText(article.value._id as string)
 }
 function showModal() {
   show.value = true
